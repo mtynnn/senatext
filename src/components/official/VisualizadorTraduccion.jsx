@@ -1,6 +1,7 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
 import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
+import { ContenedorCamara } from '../patient/ContenedorCamara';
 
 /**
  * ============================================================================
@@ -35,6 +36,11 @@ export const VisualizadorTraduccion = () => {
             <span>{mensajeEstado || "Esperando más información del paciente..."}</span>
           </p>
         </div>
+      </div>
+      
+      {/* Vista de cámara embebida para el funcionario */}
+      <div className="mt-4 flex-1">
+        <ContenedorCamara />
       </div>
     </div>
   );
