@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Edit3, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Edit3, CheckCircle2, Video, VideoOff } from 'lucide-react';
 import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
 
 /**
@@ -10,7 +10,7 @@ import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
  * Carpeta en Inglés (components/official), Archivo en Español (ControlesAccion.jsx).
  */
 export const ControlesAccion = () => {
-  const { textoReconocido, setTextoReconocido, setMensajeEstado } = usarContextoPreguntas();
+  const { textoReconocido, setTextoReconocido, setMensajeEstado, camaraActiva, setCamaraActiva } = usarContextoPreguntas();
   const [estaEditando, setEstaEditando] = useState(false);
   const [textoManual, setTextoManual] = useState('');
   const [notificacion, setNotificacion] = useState(null);
@@ -73,8 +73,20 @@ export const ControlesAccion = () => {
       ) : (
         <div className="flex items-center justify-end gap-3">
           <button
+            onClick={() => setCamaraActiva(!camaraActiva)}
+            className={`px-4 py-2.5 rounded-xl border font-medium text-xs sm:text-sm transition-all flex items-center gap-2 shadow-sm active:scale-98 ${
+              camaraActiva 
+                ? 'border-rose-300 text-rose-600 hover:bg-rose-50' 
+                : 'border-emerald-400 text-emerald-700 bg-emerald-50 hover:bg-emerald-100'
+            }`}
+          >
+            {camaraActiva ? <VideoOff className="w-4 h-4" /> : <Video className="w-4 h-4" />}
+            <span>{camaraActiva ? "Apagar Cámara" : "Encender Cámara"}</span>
+          </button>
+
+          <button
             onClick={manejarEdicion}
-            className="px-4 py-2.5 rounded-xl border border-slate-300 hover:border-slate-400 hover:bg-slate-50 text-slate-700 font-medium text-xs sm:text-sm transition-all flex items-center gap-2 shadow-2xs active:scale-98"
+            className="px-4 py-2.5 rounded-xl border border-slate-300 hover:border-slate-400 hover:bg-slate-50 text-slate-700 font-medium text-xs sm:text-sm transition-all flex items-center gap-2 shadow-sm active:scale-98"
           >
             <Edit3 className="w-4 h-4 text-slate-500" />
             <span>Corregir</span>
