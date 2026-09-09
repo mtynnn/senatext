@@ -17,8 +17,7 @@ export const PREGUNTAS_PREDETERMINADAS = [
   "¿A qué viene hoy?",
   "¿Tiene hora agendada?",
   "¿Con qué profesional?",
-  "¿Tiene algún síntoma?",
-  "¿Entendió la indicación?"
+  "¿Tiene algún síntoma?"
 ];
 
 export const ProveedorPreguntas = ({ children }) => {

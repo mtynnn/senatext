@@ -1,5 +1,5 @@
-import React from 'react';
-import { Building2, Info, Settings, User } from 'lucide-react';
+import React, { useState } from 'react';
+import { Building2, Info, Settings, User, LogOut } from 'lucide-react';
 
 /**
  * ============================================================================
@@ -9,6 +9,8 @@ import { Building2, Info, Settings, User } from 'lucide-react';
  * Carpeta en Inglés (components/official), Archivo en Español (EncabezadoSuperior.jsx).
  */
 export const EncabezadoSuperior = () => {
+  const [menuAbierto, setMenuAbierto] = useState(false);
+
   return (
     <header className="bg-slate-900 text-white border-b border-slate-800 px-4 sm:px-6 py-3 flex items-center justify-between shadow-md sticky top-0 z-30">
       <div className="flex items-center gap-3">
@@ -26,7 +28,7 @@ export const EncabezadoSuperior = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-1.5 sm:gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2 relative">
         <button 
           title="Información y ayuda" 
           aria-label="Información y ayuda"
@@ -45,17 +47,36 @@ export const EncabezadoSuperior = () => {
 
         <div className="h-4 w-px bg-slate-700 my-auto mx-1" />
 
-        <button 
-          className="flex items-center gap-2 p-1.5 pl-2 rounded text-slate-300 hover:bg-slate-800 transition-colors"
-          title="Perfil de funcionario"
-        >
-          <div className="w-7 h-7 rounded bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">
-            <User className="w-4 h-4" />
-          </div>
-          <span className="hidden sm:inline text-xs font-medium text-slate-200">
-            D. Robert (Somatometría)
-          </span>
-        </button>
+        <div className="relative">
+          <button 
+            onClick={() => setMenuAbierto(!menuAbierto)}
+            className="flex items-center gap-2 p-1.5 pl-2 rounded text-slate-300 hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-700"
+            title="Perfil de funcionario"
+          >
+            <div className="w-7 h-7 rounded bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">
+              <User className="w-4 h-4" />
+            </div>
+            <span className="hidden sm:inline text-xs font-medium text-slate-200">
+              D. Robert (Somatometría)
+            </span>
+          </button>
+
+          {/* Menú desplegable */}
+          {menuAbierto && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              <button 
+                onClick={() => {
+                  setMenuAbierto(false);
+                  // Lógica de cerrar sesión en el futuro
+                }}
+                className="w-full px-4 py-3 text-left text-sm font-medium text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Cerrar sesión</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

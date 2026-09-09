@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MessageSquare, Plus, ChevronRight, Check } from 'lucide-react';
+import React from 'react';
+import { MessageSquare, ChevronRight } from 'lucide-react';
 import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
 
 /**
@@ -10,18 +10,7 @@ import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
  * Carpeta en Inglés (components/official), Archivo en Español (BarraLateral.jsx).
  */
 export const BarraLateral = () => {
-  const { preguntaActiva, setPreguntaActiva, preguntas, agregarPreguntaLibre } = usarContextoPreguntas();
-  const [estaAbiertaEntrada, setEstaAbiertaEntrada] = useState(false);
-  const [textoPreguntaLibre, setTextoPreguntaLibre] = useState('');
-
-  const manejarEnvioPreguntaLibre = (evento) => {
-    evento.preventDefault();
-    if (textoPreguntaLibre.trim()) {
-      agregarPreguntaLibre(textoPreguntaLibre);
-      setTextoPreguntaLibre('');
-      setEstaAbiertaEntrada(false);
-    }
-  };
+  const { preguntaActiva, setPreguntaActiva, preguntas } = usarContextoPreguntas();
 
   return (
     <aside className="w-full md:w-80 bg-white border-r border-slate-200/80 p-4 md:p-5 flex flex-col justify-between shrink-0">
@@ -55,44 +44,6 @@ export const BarraLateral = () => {
             );
           })}
         </div>
-      </div>
-
-      <div className="pt-4 border-t border-slate-100 mt-4">
-        {estaAbiertaEntrada ? (
-          <form onSubmit={manejarEnvioPreguntaLibre} className="space-y-2">
-            <input
-              type="text"
-              value={textoPreguntaLibre}
-              onChange={(e) => setTextoPreguntaLibre(e.target.value)}
-              placeholder="Ej: ¿Tiene alergia a algún medicamento?"
-              className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white"
-              autoFocus
-            />
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="flex-1 bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
-              >
-                <Check className="w-3.5 h-3.5" /> Guardar
-              </button>
-              <button
-                type="button"
-                onClick={() => setEstaAbiertaEntrada(false)}
-                className="px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium py-2 rounded-lg transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
-        ) : (
-          <button
-            onClick={() => setEstaAbiertaEntrada(true)}
-            className="w-full border border-blue-200 hover:border-blue-400 bg-blue-50/50 hover:bg-blue-50 text-blue-700 font-medium text-sm py-2.5 px-4 rounded-md transition-all flex items-center justify-center gap-2 group shadow-sm"
-          >
-            <Plus className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-            <span>+ Escribir pregunta libre</span>
-          </button>
-        )}
       </div>
     </aside>
   );
