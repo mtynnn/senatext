@@ -17,7 +17,11 @@ export const VistaFuncionario = () => {
 
         <main className="flex-1 p-4 sm:p-6 md:p-8 bg-slate-50 flex flex-col">
           <div className="mb-4">
-            <Link to="/" className="inline-flex items-center text-slate-500 hover:text-blue-600 font-medium transition-colors">
+            <Link 
+              to="/" 
+              className="inline-flex items-center text-slate-500 hover:text-blue-600 font-medium transition-colors"
+              aria-label="Volver a la vista de inicio"
+            >
               <ArrowLeft className="w-5 h-5 mr-2" />
               Volver al inicio
             </Link>
