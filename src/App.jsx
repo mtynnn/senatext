@@ -6,6 +6,7 @@ import { VistaPaciente } from './pages/VistaPaciente';
 import { VistaFuncionario } from './pages/VistaFuncionario';
 import { VistaInicio } from './pages/VistaInicio';
 import { VistaAdmin } from './pages/VistaAdmin';
+import { LoginFuncionario } from './pages/LoginFuncionario';
 
 /**
  * ============================================================================
@@ -13,9 +14,10 @@ import { VistaAdmin } from './pages/VistaAdmin';
  * ============================================================================
  * Carpetas en Inglés (context, components, pages), Archivos en Español.
  * Configuración estricta de rutas:
- * - /paciente: Vista del paciente sordo.
- * - /funcionario: Módulo de atención del funcionario del CESFAM.
  * - /: Panel de inicio y navegación del MVP.
+ * - /login: Inicio de sesión corporativo para funcionarios.
+ * - /funcionario: Módulo de atención del funcionario del CESFAM.
+ * - /paciente: Vista del paciente sordo.
  * - /admin: Panel de administración de cuentas (sin protección de acceso todavía).
  */
 function App() {
@@ -27,6 +29,7 @@ function App() {
             {/* Rutas principales del MVP SeñaText */}
             <Routes>
               <Route path="/" element={<VistaInicio />} />
+              <Route path="/login" element={<LoginFuncionario />} />
               <Route path="/paciente" element={<VistaPaciente />} />
               <Route path="/funcionario" element={<VistaFuncionario />} />
               <Route path="/admin" element={<VistaAdmin />} />

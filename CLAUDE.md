@@ -30,13 +30,13 @@ npm run lint      # eslint (js,jsx) — max-warnings 0
 ### Arquitectura del código
 
 - **Convención de nombres:** carpetas en **inglés** (`context`, `components`, `pages`), archivos y símbolos en **español**.
-- **Rutas** (`src/App.jsx`): `/` VistaInicio · `/paciente` VistaPaciente · `/funcionario` VistaFuncionario · `*` → `/`.
+- **Rutas** (`src/App.jsx`): `/` VistaInicio · `/login` LoginFuncionario · `/paciente` VistaPaciente · `/funcionario` VistaFuncionario · `/admin` VistaAdmin · `*` → `/`.
 - **Estado global:** `src/context/ContextoPreguntas.jsx` (`ProveedorPreguntas` / `usarContextoPreguntas`).
   Sincroniza pregunta activa, texto reconocido, mensaje de estado y lista de preguntas entre ambas vistas.
   `PREGUNTAS_PREDETERMINADAS` define el vocabulario de preguntas del funcionario.
 - **Componentes:**
   - `components/patient/` → `ContenedorCamara` (video + canvas + pipeline MediaPipe), `TarjetaPregunta`.
-  - `components/official/` → `EncabezadoSuperior`, `BarraLateral` (selección/creación de preguntas),
+  - `components/official/` → `LoginFuncionario`, `EncabezadoSuperior`, `BarraLateral` (selección/creación de preguntas),
     `VisualizadorTraduccion` (muestra el texto y reusa `ContenedorCamara`), `ControlesAccion` (corregir / registrar síntoma).
   - `components/common/` → `PiePagina`, `BarraDesarrollo` (barra de dev con botones "simular seña"; actualmente no montada).
 - Alias de importación: `@` → `src/`.
