@@ -32,12 +32,14 @@ export const EncabezadoSuperior = () => {
   };
 
   return (
-    <header className="bg-slate-900 text-white border-b border-slate-800 px-4 sm:px-6 py-3 flex items-center justify-between shadow-md sticky top-0 z-30">
+    <header className="bg-slate-900 text-white border-b border-slate-800 px-4 sm:px-5 py-1 flex items-center justify-between shadow-md sticky top-0 z-30">
       {/* Lado izquierdo: Identidad institucional */}
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded bg-slate-800 border border-slate-700 flex items-center justify-center text-cesfam-400">
-          <Building2 className="w-5 h-5 text-sky-400" />
-        </div>
+        <img 
+          src="/Logo oficcial-Photoroom.png" 
+          alt="Logo SeñaText" 
+          className="h-12 sm:h-20 w-auto object-contain bg-white rounded-md "
+        />
         <div className="flex items-center gap-2">
           <h1 className="font-bold text-white text-sm sm:text-base tracking-wide">
             CESFAM

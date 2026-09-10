@@ -118,7 +118,7 @@ export const ContenedorCamara = () => {
   }, [camaraActiva]);
 
   return (
-    <div className="relative w-full bg-slate-100 border-2 border-slate-300 rounded-lg p-4 md:p-6 flex flex-col items-center justify-center min-h-[320px] sm:min-h-[400px] md:min-h-[460px] overflow-hidden group">
+    <div className="relative w-full aspect-video bg-slate-100 border-2 border-slate-300 rounded-2xl p-2 flex flex-col items-center justify-center max-h-[300px] sm:max-h-[350px] md:max-h-[380px] min-h-[230px] overflow-hidden group mx-auto">
 
       {/* Marcadores visuales de visor de cámara (Fiel al mockup) */}
       <div className="absolute top-6 left-6 w-8 h-8 border-t-4 border-l-4 border-blue-400 pointer-events-none" />

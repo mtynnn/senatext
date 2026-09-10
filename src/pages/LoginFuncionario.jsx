@@ -121,8 +121,12 @@ export const LoginFuncionario = () => {
         <div className="bg-white rounded-md border border-slate-200 shadow-sm p-6 sm:p-8">
           {/* Encabezado institucional */}
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-md bg-blue-50 text-blue-700 border border-blue-100 mb-3 shadow-xs">
-              <Building2 className="w-6 h-6" />
+            <div className="flex justify-center items-center py-1 mb-2">
+              <img 
+                src="/Logo oficcial-Photoroom.png" 
+                alt="Logo SeñaText" 
+                className="w-64 sm:w-80 md:w-[340px] max-w-full h-auto max-h-24 sm:max-h-28 object-contain mx-auto"
+              />
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               Portal Funcionario

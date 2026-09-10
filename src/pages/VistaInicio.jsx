@@ -39,13 +39,13 @@ export const VistaInicio = () => {
   }, [location, navigate]);
 
   return (
-    <div className="min-h-[calc(100vh-42px)] bg-slate-50 flex flex-col justify-between font-sans">
-      <main className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-12 my-auto space-y-8">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-between font-sans overflow-x-hidden">
+      <main className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-6 my-auto space-y-4 sm:space-y-6">
         {/* Banner de confirmación de cierre de sesión exitoso */}
         {mostrarAlerta && (
           <div 
             role="status"
-            className="max-w-4xl mx-auto w-full p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg flex items-center justify-between shadow-xs animate-in fade-in duration-200"
+            className="max-w-4xl mx-auto w-full p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg flex items-center justify-between shadow-xs animate-in fade-in duration-200"
           >
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -64,36 +64,40 @@ export const VistaInicio = () => {
           </div>
         )}
 
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
-            Portal SeñaText
-          </h1>
-          <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto">
+        <div className="text-center space-y-3 sm:space-y-4 max-w-3xl mx-auto">
+          <div className="flex justify-center items-center py-1">
+            <img 
+              src="/Logo oficcial-Photoroom.png" 
+              alt="Logo SeñaText" 
+              className="w-80 sm:w-[540px] md:w-[720px] max-w-full h-auto max-h-50 sm:max-h-60 object-contain mx-auto"
+            />
+          </div>
+          <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto font-medium">
             Seleccione su módulo de ingreso al sistema de atención inclusiva.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
           {/* Módulo Paciente */}
           <Link
             to="/paciente"
-            className="group bg-white rounded-3xl p-8 border border-slate-200 shadow-md hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col justify-between relative overflow-hidden"
+            className="group bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-md hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col justify-between relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-sky-50 rounded-bl-full -z-0 group-hover:scale-110 transition-transform" />
-            <div className="space-y-4 z-10">
-              <div className="w-14 h-14 rounded-2xl bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/30">
-                <User className="w-7 h-7" />
+            <div className="absolute top-0 right-0 w-28 h-28 bg-sky-50 rounded-bl-full -z-0 group-hover:scale-110 transition-transform" />
+            <div className="space-y-3 z-10">
+              <div className="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/30">
+                <User className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-extrabold text-slate-900 mt-1">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
                   Ingreso Paciente
                 </h2>
-                <p className="text-slate-500 text-sm mt-2 leading-relaxed">
+                <p className="text-slate-500 text-xs sm:text-sm mt-1.5 leading-relaxed">
                   Acceso al visor de cámara para iniciar la comunicación en Lengua de Señas Chilena.
                 </p>
               </div>
             </div>
-            <div className="mt-8 flex items-center font-bold text-sky-600 text-sm group-hover:translate-x-1 transition-transform z-10">
+            <div className="mt-6 flex items-center font-bold text-sky-600 text-sm group-hover:translate-x-1 transition-transform z-10">
               <span>Abrir visor de paciente</span>
               <ArrowRight className="w-4 h-4 ml-2" />
             </div>
@@ -102,23 +106,23 @@ export const VistaInicio = () => {
           {/* Módulo Funcionario -> Redirige a /login */}
           <Link
             to="/login"
-            className="group bg-white rounded-3xl p-8 border border-slate-200 shadow-md hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col justify-between relative overflow-hidden"
+            className="group bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-md hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col justify-between relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-sky-50 rounded-bl-full -z-0 group-hover:scale-110 transition-transform" />
-            <div className="space-y-4 z-10">
-              <div className="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center shadow-md shadow-slate-900/30">
-                <Monitor className="w-7 h-7 text-sky-400" />
+            <div className="absolute top-0 right-0 w-28 h-28 bg-sky-50 rounded-bl-full -z-0 group-hover:scale-110 transition-transform" />
+            <div className="space-y-3 z-10">
+              <div className="w-12 h-12 rounded-2xl bg-slate-800 text-white flex items-center justify-center shadow-md shadow-slate-900/30">
+                <Monitor className="w-6 h-6 text-sky-400" />
               </div>
               <div>
-                <h2 className="text-2xl font-extrabold text-slate-900 mt-1">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
                   Ingreso Funcionario
                 </h2>
-                <p className="text-slate-500 text-sm mt-2 leading-relaxed">
+                <p className="text-slate-500 text-xs sm:text-sm mt-1.5 leading-relaxed">
                   Panel de atención del CESFAM. Requiere inicio de sesión institucional corporativo.
                 </p>
               </div>
             </div>
-            <div className="mt-8 flex items-center font-bold text-sky-600 text-sm group-hover:translate-x-1 transition-transform z-10">
+            <div className="mt-6 flex items-center font-bold text-sky-600 text-sm group-hover:translate-x-1 transition-transform z-10">
               <span>Abrir módulo de atención</span>
               <ArrowRight className="w-4 h-4 ml-2" />
             </div>
