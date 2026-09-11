@@ -12,7 +12,9 @@
   "dependencies": {
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
+    "@mediapipe/hands": "^0.4.1675469240",
     "@mediapipe/holistic": "^0.5.1675471629",
+    "@mediapipe/tasks-vision": "^1.0.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.39.0",
     "react": "^18.3.1",
