@@ -1,7 +1,6 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
 import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
-import { ContenedorCamara } from '../patient/ContenedorCamara';
 
 /**
  * ============================================================================
@@ -26,10 +25,10 @@ export const VisualizadorTraduccion = () => {
           </div>
         </div>
 
-        <div className="py-6 min-h-[140px] flex flex-col justify-center">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-none">
-            {textoReconocido || "Esperando seña..."}
-          </h2>
+        <div className="mt-4 p-6 md:p-8 bg-slate-50 border-2 border-slate-200 rounded-2xl min-h-[200px] sm:min-h-[250px] shadow-inner flex flex-col justify-start overflow-y-auto">
+          <p className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-800 leading-relaxed break-words">
+            {textoReconocido || "Esperando se�a..."}
+          </p>
 
           <p className="text-slate-500 text-sm sm:text-base font-normal mt-4 flex items-center gap-2">
             <Clock className="w-4 h-4 text-slate-400 shrink-0" />
@@ -37,11 +36,8 @@ export const VisualizadorTraduccion = () => {
           </p>
         </div>
       </div>
-      
-      {/* Vista de cámara embebida para el funcionario */}
-      <div className="mt-4 flex-1">
-        <ContenedorCamara />
-      </div>
     </div>
   );
 };
+
+
