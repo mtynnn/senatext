@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Building2, ArrowLeft, AlertCircle, Loader2, Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { PiePagina } from '../components/common/PiePagina';
+import { supabase } from '../lib/supabase';
 
 /**
  * ============================================================================
@@ -73,13 +74,17 @@ export const LoginFuncionario = () => {
   /**
    * Envío del formulario de autenticación corporativa
    */
-  const manejarSubmit = (e) => {
+    const manejarSubmit = async (e) => {
     e.preventDefault();
     setErrorCredenciales('');
 
-    // Validación obligatoria y de dominio de correo
-    const correoLimpio = correo.trim().toLowerCase();
-    if (!correoLimpio || !esDominioValido(correoLimpio)) {
+    const emailNormalizado = correo.trim();
+    if (!emailNormalizado || !password) {
+      setErrorCredenciales('Por favor ingrese correo y contrase�a.');
+      return;
+    }
+
+    if (!esDominioValido(emailNormalizado)) {
       setErrorCorreo('Debe usar un correo @gmail.com o institucional @cesfam');
       return;
     }
@@ -87,19 +92,23 @@ export const LoginFuncionario = () => {
     setErrorCorreo('');
     setCargando(true);
 
-    // Simulación de verificación con el servicio de autenticación
-    setTimeout(() => {
-      // Regla de negocio: la contraseña válida es "123456"
-      if (password !== '123456') {
-        setCargando(false);
-        setErrorCredenciales('Credenciales incorrectas. Verifique su contraseña.');
-        return;
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: emailNormalizado,
+        password: password
+      });
+
+      if (error) {
+        throw error;
       }
 
-      // Autenticación exitosa -> Redirección al módulo de atención
-      setCargando(false);
       navigate('/funcionario');
-    }, 700);
+    } catch (err) {
+      console.error('Error de autenticaci�n:', err);
+      setErrorCredenciales('Credenciales incorrectas. Verifique su correo y contrase�a.');
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
@@ -268,3 +277,5 @@ export const LoginFuncionario = () => {
 };
 
 export default LoginFuncionario;
+
+
