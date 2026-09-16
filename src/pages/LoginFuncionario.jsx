@@ -1,5 +1,5 @@
-﻿import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Building2, ArrowLeft, AlertCircle, Loader2, Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { PiePagina } from '../components/common/PiePagina';
 import { supabase } from '../lib/supabase';
@@ -8,13 +8,14 @@ const DOMINIOS_VALIDOS = ['@gmail.com', '@cesfam.com', '@cesfam.cl'];
 
 export const LoginFuncionario = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [mostrarPassword, setMostrarPassword] = useState(false);
 
   const [errorCorreo, setErrorCorreo] = useState('');
-  const [errorCredenciales, setErrorCredenciales] = useState('');
+  const [errorCredenciales, setErrorCredenciales] = useState(location.state?.mensajeError || '');
   const [cargando, setCargando] = useState(false);
 
   const esDominioValido = (email) => {
