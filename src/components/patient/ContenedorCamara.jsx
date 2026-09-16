@@ -82,8 +82,8 @@ export const ContenedorCamara = () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            width: { ideal: 640 },
-            height: { ideal: 480 },
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
             frameRate: { ideal: 30 }
           }
         });
@@ -118,7 +118,7 @@ export const ContenedorCamara = () => {
   }, [camaraActiva]);
 
   return (
-    <div className="relative w-full aspect-video bg-slate-100 border-2 border-slate-300 rounded-2xl p-2 flex flex-col items-center justify-center max-h-[300px] sm:max-h-[350px] md:max-h-[380px] min-h-[230px] overflow-hidden group mx-auto">
+    <div className="relative w-full aspect-video bg-slate-100 border-2 border-slate-300 rounded-2xl p-2 flex flex-col items-center justify-center overflow-hidden group mx-auto">
 
       {/* Marcadores visuales de visor de cámara (Fiel al mockup) */}
       <div className="absolute top-6 left-6 w-8 h-8 border-t-4 border-l-4 border-blue-400 pointer-events-none" />
@@ -129,13 +129,13 @@ export const ContenedorCamara = () => {
       {/* Video y Canvas para MediaPipe */}
       <video
         ref={referenciaVideo}
-        className={`absolute inset-0 w-full h-full object-cover rounded-3xl z-0 ${(!camaraActiva || !camaraLista) ? 'hidden' : ''}`}
+        className={`absolute inset-0 w-full h-full object-contain rounded-3xl z-0 ${(!camaraActiva || !camaraLista) ? 'hidden' : ''}`}
         playsInline
         muted
       />
       <canvas
         ref={referenciaLienzo}
-        className={`absolute inset-0 w-full h-full pointer-events-none rounded-3xl z-10 ${(!camaraActiva || !camaraLista) ? 'hidden' : ''}`}
+        className={`absolute inset-0 w-full h-full object-contain pointer-events-none rounded-3xl z-10 ${(!camaraActiva || !camaraLista) ? 'hidden' : ''}`}
       />
 
       {/* Mensajes de estado (Apagada o Cargando) */}
