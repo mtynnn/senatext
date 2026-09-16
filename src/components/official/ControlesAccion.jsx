@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { ArrowRight, Edit3, CheckCircle2, Video, VideoOff } from 'lucide-react';
 import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
 
