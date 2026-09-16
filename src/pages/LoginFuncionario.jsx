@@ -1,24 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Building2, ArrowLeft, AlertCircle, Loader2, Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { PiePagina } from '../components/common/PiePagina';
-
-/**
- * ============================================================================
- * COMPONENTE / PÁGINA: LoginFuncionario
- * ============================================================================
- * Ubicación: src/pages/LoginFuncionario.jsx
- * Ruta: /login
- * 
- * Flujo de Login Corporativo para funcionarios del CESFAM:
- * - Diseño Enterprise UI sobrio, centrado, bordes rounded-md, fondo bg-slate-50.
- * - Validación estricta de dominios de correo permitidos:
- *   @gmail.com, @cesfam.com, @cesfam.cl.
- * - Simulación de estado de carga ("Verificando...").
- * - Validación de contraseña institucional ("123456") con recuadro de error
- *   estilizado (bg-red-50, text-red-700) sin uso de alert().
- * - Redirección exitosa a /funcionario.
- */
+import { supabase } from '../lib/supabase';
 
 const DOMINIOS_VALIDOS = ['@gmail.com', '@cesfam.com', '@cesfam.cl'];
 
@@ -29,23 +13,15 @@ export const LoginFuncionario = () => {
   const [password, setPassword] = useState('');
   const [mostrarPassword, setMostrarPassword] = useState(false);
 
-  // Estados de validación y carga
   const [errorCorreo, setErrorCorreo] = useState('');
   const [errorCredenciales, setErrorCredenciales] = useState('');
   const [cargando, setCargando] = useState(false);
 
-  /**
-   * Valida si el correo ingresado termina en alguno de los dominios permitidos:
-   * @gmail.com, @cesfam.com o @cesfam.cl
-   */
   const esDominioValido = (email) => {
     const emailNormalizado = email.trim().toLowerCase();
     return DOMINIOS_VALIDOS.some((dominio) => emailNormalizado.endsWith(dominio));
   };
 
-  /**
-   * Manejador de cambio en el input de correo
-   */
   const manejarCambioCorreo = (e) => {
     const valor = e.target.value;
     setCorreo(valor);
@@ -58,9 +34,6 @@ export const LoginFuncionario = () => {
     }
   };
 
-  /**
-   * Validación del correo al perder el foco (onBlur)
-   */
   const manejarBlurCorreo = () => {
     const valor = correo.trim();
     if (valor && !esDominioValido(valor)) {
@@ -70,16 +43,17 @@ export const LoginFuncionario = () => {
     }
   };
 
-  /**
-   * Envío del formulario de autenticación corporativa
-   */
-  const manejarSubmit = (e) => {
+  const manejarSubmit = async (e) => {
     e.preventDefault();
     setErrorCredenciales('');
 
-    // Validación obligatoria y de dominio de correo
-    const correoLimpio = correo.trim().toLowerCase();
-    if (!correoLimpio || !esDominioValido(correoLimpio)) {
+    const emailNormalizado = correo.trim();
+    if (!emailNormalizado || !password) {
+      setErrorCredenciales('Por favor ingrese correo y contraseña.');
+      return;
+    }
+
+    if (!esDominioValido(emailNormalizado)) {
       setErrorCorreo('Debe usar un correo @gmail.com o institucional @cesfam');
       return;
     }
@@ -87,25 +61,32 @@ export const LoginFuncionario = () => {
     setErrorCorreo('');
     setCargando(true);
 
-    // Simulación de verificación con el servicio de autenticación
-    setTimeout(() => {
-      // Regla de negocio: la contraseña válida es "123456"
-      if (password !== '123456') {
-        setCargando(false);
-        setErrorCredenciales('Credenciales incorrectas. Verifique su contraseña.');
-        return;
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: emailNormalizado,
+        password: password
+      });
+
+      if (error) {
+        throw error;
       }
 
-      // Autenticación exitosa -> Redirección al módulo de atención
+      if (emailNormalizado === 'admin@cesfam.com') {
+        navigate('/admin');
+      } else {
+        navigate('/funcionario');
+      }
+    } catch (err) {
+      console.error('Error de autenticación:', err);
+      setErrorCredenciales('Credenciales incorrectas. Verifique su correo y contraseña.');
+    } finally {
       setCargando(false);
-      navigate('/funcionario');
-    }, 700);
+    }
   };
 
   return (
     <div className="min-h-[calc(100vh-42px)] bg-slate-50 flex flex-col justify-between font-sans">
       <main className="max-w-md w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 my-auto">
-        {/* Enlace de retorno al portal principal */}
         <div className="mb-6">
           <Link
             to="/"
@@ -117,9 +98,7 @@ export const LoginFuncionario = () => {
           </Link>
         </div>
 
-        {/* Tarjeta de Login Enterprise */}
         <div className="bg-white rounded-md border border-slate-200 shadow-sm p-6 sm:p-8">
-          {/* Encabezado institucional */}
           <div className="text-center mb-6">
             <div className="flex justify-center items-center py-1 mb-2">
               <img 
@@ -136,7 +115,6 @@ export const LoginFuncionario = () => {
             </p>
           </div>
 
-          {/* Recuadro de error estilizado (sin alert) */}
           {errorCredenciales && (
             <div 
               role="alert"
@@ -149,9 +127,7 @@ export const LoginFuncionario = () => {
             </div>
           )}
 
-          {/* Formulario */}
           <form onSubmit={manejarSubmit} noValidate className="space-y-4">
-            {/* Campo: Correo Electrónico */}
             <div>
               <label 
                 htmlFor="input-correo" 
@@ -180,7 +156,6 @@ export const LoginFuncionario = () => {
                   }`}
                 />
               </div>
-              {/* Mensaje de error de validación de dominio de correo */}
               {errorCorreo && (
                 <p className="mt-1.5 text-xs text-red-600 font-medium flex items-center gap-1">
                   <span>{errorCorreo}</span>
@@ -188,7 +163,6 @@ export const LoginFuncionario = () => {
               )}
             </div>
 
-            {/* Campo: Contraseña */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label 
@@ -235,7 +209,6 @@ export const LoginFuncionario = () => {
               </div>
             </div>
 
-            {/* Botón de Acción Principal */}
             <div className="pt-2">
               <button
                 type="submit"
@@ -254,7 +227,6 @@ export const LoginFuncionario = () => {
             </div>
           </form>
 
-          {/* Información de seguridad corporativa */}
           <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-[11px] text-slate-400">
             <ShieldCheck className="w-4 h-4 text-slate-400 shrink-0" />
             <span>Acceso seguro cifrado para personal de salud</span>

@@ -40,11 +40,11 @@ export const FormularioNuevaCuenta = ({ onExito, onCancelar }) => {
     setValores((previos) => ({ ...previos, [name]: value }));
   };
 
-  const manejarEnvio = (evento) => {
+  const manejarEnvio = async (evento) => {
     evento.preventDefault();
     setError(null);
 
-    const resultado = crearCuenta(valores);
+    const resultado = await crearCuenta(valores);
     if (!resultado.ok) {
       setError(resultado.error);
       return;
@@ -158,3 +158,4 @@ export const FormularioNuevaCuenta = ({ onExito, onCancelar }) => {
     </div>
   );
 };
+

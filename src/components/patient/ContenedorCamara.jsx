@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+﻿import React, { useRef, useEffect, useState } from 'react';
 import { Video, VideoOff, Camera } from 'lucide-react';
 import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
 import { Holistic, FACEMESH_TESSELATION, HAND_CONNECTIONS, POSE_CONNECTIONS } from '@mediapipe/holistic';
@@ -69,7 +69,7 @@ export const ContenedorCamara = () => {
 
     holistic.onResults(onResults);
 
-    // Bucle asíncrono para análisis de frames con MediaPipe (~10 FPS)
+    // Bucle asÃ­ncrono para anÃ¡lisis de frames con MediaPipe (~10 FPS)
     async function procesarFrame() {
       if (!camaraActiva) return;
       if (videoElement && videoElement.readyState >= 2) {
@@ -100,7 +100,7 @@ export const ContenedorCamara = () => {
           };
         }
       } catch (error) {
-        console.error("Error al iniciar cámara:", error);
+        console.error("Error al iniciar cÃ¡mara:", error);
       }
     }
 
@@ -120,7 +120,7 @@ export const ContenedorCamara = () => {
   return (
     <div className="relative w-full aspect-video bg-slate-100 border-2 border-slate-300 rounded-2xl p-2 flex flex-col items-center justify-center overflow-hidden group mx-auto">
 
-      {/* Marcadores visuales de visor de cámara (Fiel al mockup) */}
+      {/* Marcadores visuales de visor de cÃ¡mara (Fiel al mockup) */}
       <div className="absolute top-6 left-6 w-8 h-8 border-t-4 border-l-4 border-blue-400 pointer-events-none" />
       <div className="absolute top-6 right-6 w-8 h-8 border-t-4 border-r-4 border-blue-400 pointer-events-none" />
       <div className="absolute bottom-6 left-6 w-8 h-8 border-b-4 border-l-4 border-blue-400 pointer-events-none" />
@@ -152,9 +152,10 @@ export const ContenedorCamara = () => {
           <div className="w-20 h-20 md:w-24 md:h-24 rounded-lg bg-white/90 border-2 border-slate-300 shadow-sm flex items-center justify-center text-blue-500 group-hover:scale-105 transition-transform duration-300 mb-4">
             <Video className="w-10 h-10 md:w-12 md:h-12 stroke-[1.5]" />
           </div>
-          <span className="text-blue-500 font-semibold">Iniciando cámara y modelo de IA...</span>
+          <span className="text-blue-500 font-semibold">Iniciando cÃ¡mara y modelo de IA...</span>
         </div>
       )}
     </div>
   );
 };
+

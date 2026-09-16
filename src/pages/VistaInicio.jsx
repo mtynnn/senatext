@@ -1,65 +1,45 @@
-import React, { useEffect, useState, useRef } from 'react';
+﻿import React, { useEffect, useState, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { User, Monitor, ArrowRight, CheckCircle2, X } from 'lucide-react';
 import { PiePagina } from '../components/common/PiePagina';
 
-/**
- * ============================================================================
- * VISTA: VistaInicio (Portal SeñaText)
- * ============================================================================
- * Ubicación: src/pages/VistaInicio.jsx
- * Ruta: /
- * 
- * Flujo de navegación:
- * - Ingreso Paciente -> /paciente
- * - Ingreso Funcionario (Abrir módulo de atención) -> /login
- * 
- * Notificación de Cierre de Sesión:
- * - Detecta el retorno desde /funcionario (o EncabezadoSuperior) cuando se
- *   activa "Terminar Jornada Laboral" y dispara la alerta correspondiente.
- */
 export const VistaInicio = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
-  const alertaDisparadaRef = useRef(false);
 
   useEffect(() => {
-    // Si viene redirigido tras terminar la jornada laboral
-    if (location.state?.sesionCerrada && !alertaDisparadaRef.current) {
-      alertaDisparadaRef.current = true;
+    if (location.state?.sesionCerrada) {
       setMostrarAlerta(true);
-
-      // Lanzar alerta requerida
-      alert('Cierre de sesión exitoso');
-
-      // Limpiar el estado de navegación en el historial para evitar alertas repetidas
-      navigate('/', { replace: true, state: {} });
+      const timer = setTimeout(() => {
+        setMostrarAlerta(false);
+      }, 5000);
+      return () => clearTimeout(timer);
     }
-  }, [location, navigate]);
+  }, [location.state?.sesionCerrada]);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between font-sans overflow-x-hidden">
       <main className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-6 my-auto space-y-4 sm:space-y-6">
-        {/* Banner de confirmación de cierre de sesión exitoso */}
+        
+        {/* Banner Flotante de Alerta */}
         {mostrarAlerta && (
           <div 
             role="status"
-            className="max-w-4xl mx-auto w-full p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg flex items-center justify-between shadow-xs animate-in fade-in duration-200"
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-md p-4 bg-emerald-100 border-2 border-emerald-500 text-emerald-900 rounded-xl shadow-2xl flex items-center justify-between animate-in slide-in-from-top-4 fade-in duration-300"
           >
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+            <div className="flex items-center gap-4">
+              <CheckCircle2 className="w-8 h-8 text-emerald-600 shrink-0" />
               <div>
-                <p className="font-semibold text-sm">Cierre de sesión exitoso</p>
-                <p className="text-xs text-emerald-700">Ha finalizado su jornada laboral correctamente.</p>
+                <p className="font-bold text-lg">Sesión Finalizada</p>
+                <p className="text-sm font-medium text-emerald-700">Ha cerrado su jornada correctamente.</p>
               </div>
             </div>
             <button
               onClick={() => setMostrarAlerta(false)}
-              className="p-1 rounded-md text-emerald-600 hover:bg-emerald-100 transition-colors"
-              aria-label="Cerrar notificación"
+              className="p-2 rounded-lg bg-emerald-200 text-emerald-800 hover:bg-emerald-300 transition-colors"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         )}
