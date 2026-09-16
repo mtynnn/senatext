@@ -8,8 +8,8 @@ import { TarjetaPregunta } from '../components/patient/TarjetaPregunta';
 export const VistaPaciente = () => {
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col justify-between px-4 sm:px-6 md:px-8 pt-2 pb-4 font-sans overflow-x-hidden">
-      <main className="max-w-4xl mx-auto w-full space-y-3 sm:space-y-4 my-auto">
-        <div className="flex items-center justify-between mb-1">
+      <header>
+                <div className="flex items-center justify-between mb-1">
           <Link to="/" className="inline-flex items-center text-slate-500 hover:text-blue-700 font-medium transition-colors text-xs sm:text-sm">
             <ArrowLeft className="w-4 h-4 mr-1.5" />
             Volver al inicio
@@ -22,7 +22,8 @@ export const VistaPaciente = () => {
             />
           </div>
         </div>
-        
+      </header>
+      <main className="max-w-4xl mx-auto w-full space-y-3 sm:space-y-4 my-auto">
         <section aria-label="Visor de cámara y procesamiento de señas">
           <ContenedorCamara />
         </section>
