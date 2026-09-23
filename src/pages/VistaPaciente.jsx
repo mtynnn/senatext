@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { ContenedorCamara } from '../components/patient/ContenedorCamara';
 import { TarjetaPregunta } from '../components/patient/TarjetaPregunta';
+import { TarjetaIndicaciones } from '../components/patient/TarjetaIndicaciones';
 
 
 export const VistaPaciente = () => {
@@ -18,19 +19,27 @@ export const VistaPaciente = () => {
             <img 
               src="/Logo oficcial-Photoroom.png" 
               alt="Logo SeñaText" 
-              className="w-36 sm:w-56 md:w-64 max-w-full h-auto max-h-12 sm:max-h-14 object-contain"
+              className="w-40 sm:w-64 md:w-72 max-w-full h-auto max-h-14 sm:max-h-16 md:max-h-20 object-contain"
             />
           </div>
         </div>
       </header>
-      <main className="max-w-4xl mx-auto w-full space-y-3 sm:space-y-4 my-auto">
-        <section aria-label="Visor de cámara y procesamiento de señas">
-          <ContenedorCamara />
-        </section>
+      <main className="w-full my-auto">
+        <div className="grid w-full gap-3 sm:gap-4 2xl:grid-cols-[minmax(0,1fr)_minmax(0,56rem)_minmax(0,1fr)] 2xl:items-stretch">
+          <section aria-label="Indicaciones para el reconocimiento" className="w-full 2xl:col-start-1 2xl:row-start-1 2xl:justify-self-end">
+            <TarjetaIndicaciones />
+          </section>
 
-        <section aria-label="Pregunta actual del funcionario">
-          <TarjetaPregunta />
-        </section>
+          <section aria-label="Visor de cámara y procesamiento de señas" className="w-full max-w-4xl justify-self-center 2xl:col-start-2 2xl:row-start-1">
+            <ContenedorCamara />
+          </section>
+
+          <div aria-hidden="true" className="hidden 2xl:col-start-3 2xl:row-start-1 2xl:block" />
+
+          <section aria-label="Pregunta actual del funcionario" className="w-full max-w-4xl justify-self-center 2xl:col-start-2">
+            <TarjetaPregunta />
+          </section>
+        </div>
       </main>
     </div>
   );

@@ -152,7 +152,7 @@ export const ContenedorCamara = () => {
           <div className="w-20 h-20 md:w-24 md:h-24 rounded-lg bg-white/90 border-2 border-slate-300 shadow-sm flex items-center justify-center text-blue-500 group-hover:scale-105 transition-transform duration-300 mb-4">
             <Video className="w-10 h-10 md:w-12 md:h-12 stroke-[1.5]" />
           </div>
-          <span className="text-blue-500 font-semibold">Iniciando cÃ¡mara y modelo de IA...</span>
+          <span className="text-blue-500 font-semibold">Iniciando cámara y modelo de IA...</span>
         </div>
       )}
     </div>
