@@ -39,7 +39,16 @@ export const ProveedorAuth = ({ children }) => {
     };
   }, []);
 
-  const esAdmin = usuario?.email === 'admin@cesfam.com';
+  const [esAdmin, setEsAdmin] = useState(false);
+
+  useEffect(() => {
+    const cargarRol = async () => {
+      if (!usuario) { setEsAdmin(false); return; }
+      const { data, error } = await supabase.from('funcionarios').select('rol').eq('id', usuario.id).single();
+      setEsAdmin(!error && data?.rol === 'admin');
+    };
+    cargarRol();
+  }, [usuario]);
 
   const cerrarSesion = async () => {
     setCargando(true);

@@ -1,163 +1,54 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { PREGUNTAS_PREDETERMINADAS } from './ContextoPreguntas';
-import { supabase, supabaseAdmin } from '../lib/supabase';
-
-/**
- * ============================================================================
- * ARQUITECTURA DE ESTADO GLOBAL (Contexto de Cuentas - Panel de Administración)
- * ============================================================================
- */
+import { supabase } from '../lib/supabase';
 
 const ContextoCuentas = createContext(undefined);
-
-export const ROLES = {
-  PENDIENTE: 'pendiente',
-  FUNCIONARIO: 'funcionario',
-};
-
-export const ESTADOS_INVITACION = {
-  ENVIADA: 'enviada',
-  ACTIVA: 'activa',
-};
-
-export const TIPOS_ATENCION = [
-  'Matrona',
-  'Doctor general',
-  'Somatometría',
-  'Enfermería',
-  'Nutrición',
-  'Psicología',
-];
-
+export const ROLES = { PENDIENTE: 'pendiente', FUNCIONARIO: 'funcionario' };
+export const ESTADOS_INVITACION = { ENVIADA: 'enviada', ACTIVA: 'activa' };
+export const TIPOS_ATENCION = ['Matrona', 'Doctor general', 'SomatometrÃ­a', 'EnfermerÃ­a', 'NutriciÃ³n', 'PsicologÃ­a'];
 export const TIPOS_CONSULTA = PREGUNTAS_PREDETERMINADAS;
 export const ANIOS_DISPONIBLES = [2024, 2025, 2026];
-
 const EXPRESION_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+async function ejecutarAdministracion(action, payload = {}) {
+  const { data, error } = await supabase.functions.invoke('manage-users', { body: { action, ...payload } });
+  if (error) throw new Error(error.message || 'No fue posible completar la operaciÃ³n.');
+  if (data?.error) throw new Error(data.error);
+  return data;
+}
 
 export const ProveedorCuentas = ({ children }) => {
   const [cuentas, setCuentas] = useState([]);
   const [atenciones, setAtenciones] = useState([]);
+  const cargarCuentas = useCallback(async () => {
+    try { setCuentas((await ejecutarAdministracion('list')).cuentas || []); }
+    catch (error) { console.error('Error cargando funcionarios:', error); }
+  }, []);
+  useEffect(() => { cargarCuentas(); }, [cargarCuentas]);
 
-  useEffect(() => {
-    const cargarCuentas = async () => {
-      const { data, error } = await supabaseAdmin.from('funcionarios').select('*');
-      if (error) {
-        console.error('Error cargando funcionarios:', error);
-      } else if (data) {
-        const cuentasMapeadas = data.map(f => ({
-          id: f.id,
-          nombre: f.nombre,
-          email: f.correo,
-          rol: f.rol || ROLES.FUNCIONARIO,
-          estadoInvitacion: ESTADOS_INVITACION.ACTIVA,
-          creadaEn: new Date().toISOString(),
-          correoEnviadoEn: new Date().toISOString()
-        }));
-        setCuentas(cuentasMapeadas);
-      }
-    };
-    cargarCuentas();
+  const crearCuenta = useCallback(async ({ nombre, email }) => {
+    const nombreLimpio = (nombre || '').trim();
+    const emailLimpio = (email || '').trim().toLowerCase();
+    if (!nombreLimpio || !emailLimpio) return { ok: false, error: 'Complete nombre y correo.' };
+    if (!EXPRESION_EMAIL.test(emailLimpio)) return { ok: false, error: 'Ingrese un correo electrÃ³nico vÃ¡lido.' };
+    try {
+      const data = await ejecutarAdministracion('create', { nombre: nombreLimpio, email: emailLimpio });
+      setCuentas((previas) => [...previas, data.cuenta]);
+      return { ok: true, cuenta: data.cuenta };
+    } catch (error) { return { ok: false, error: error.message }; }
   }, []);
 
-  const crearCuenta = useCallback(
-    async ({ nombre, email }) => {
-      const nombreLimpio = (nombre || '').trim();
-      const emailLimpio = (email || '').trim().toLowerCase();
-
-      if (!nombreLimpio || !emailLimpio) {
-        return { ok: false, error: 'Complete nombre y correo.' };
-      }
-      if (!EXPRESION_EMAIL.test(emailLimpio)) {
-        return { ok: false, error: 'Ingrese un correo electrónico válido.' };
-      }
-      if (cuentas.some((c) => c.email.toLowerCase() === emailLimpio)) {
-        return { ok: false, error: 'Ya existe una cuenta con ese correo.' };
-      }
-
-      // 1. Crear el usuario en Supabase Auth usando el cliente Admin
-      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-        email: emailLimpio,
-        password: '123456',
-        email_confirm: true
-      });
-
-      if (authError) {
-        return { ok: false, error: authError.message };
-      }
-
-      const userId = authData.user.id;
-
-      // 2. Insertar en la tabla funcionarios
-      const { error: dbError } = await supabaseAdmin.from('funcionarios').insert([
-        {
-          id: userId,
-          nombre: nombreLimpio,
-          correo: emailLimpio,
-          rol: 'funcionario',
-          modulo: 'general'
-        }
-      ]);
-
-      if (dbError) {
-        return { ok: false, error: 'Error guardando en la tabla: ' + dbError.message };
-      }
-
-      const nuevaCuenta = {
-        id: userId,
-        nombre: nombreLimpio,
-        email: emailLimpio,
-        rol: ROLES.FUNCIONARIO,
-        estadoInvitacion: ESTADOS_INVITACION.ACTIVA,
-        creadaEn: new Date().toISOString(),
-        correoEnviadoEn: new Date().toISOString(),
-      };
-
-      setCuentas((previas) => [...previas, nuevaCuenta]);
-      return { ok: true, cuenta: nuevaCuenta };
-    },
-    [cuentas]
-  );
-
-  const enviarCorreo = useCallback((idCuenta) => {
-    // Simulado para MVP
-  }, []);
-
+  const enviarCorreo = useCallback(async (idCuenta) => ejecutarAdministracion('resend-invite', { id: idCuenta }), []);
   const revocarCuenta = useCallback(async (idCuenta) => {
-    // Primero borrar de la tabla
-    await supabaseAdmin.from('funcionarios').delete().eq('id', idCuenta);
-    // Luego borrar de auth
-    await supabaseAdmin.auth.admin.deleteUser(idCuenta);
-    
+    await ejecutarAdministracion('delete', { id: idCuenta });
     setCuentas((previas) => previas.filter((cuenta) => cuenta.id !== idCuenta));
     setAtenciones((previas) => previas.filter((a) => a.funcionarioId !== idCuenta));
   }, []);
 
-  const otorgarFuncionario = useCallback(() => {}, []);
-  const revocarFuncionario = useCallback(() => {}, []);
-
-  const valorContexto = {
-    cuentas,
-    atenciones,
-    crearCuenta,
-    enviarCorreo,
-    revocarCuenta,
-    otorgarFuncionario,
-    revocarFuncionario,
-  };
-
-  return (
-    <ContextoCuentas.Provider value={valorContexto}>
-      {children}
-    </ContextoCuentas.Provider>
-  );
+  return <ContextoCuentas.Provider value={{ cuentas, atenciones, crearCuenta, enviarCorreo, revocarCuenta, otorgarFuncionario: () => {}, revocarFuncionario: () => {} }}>{children}</ContextoCuentas.Provider>;
 };
-
 export const usarContextoCuentas = () => {
   const contexto = useContext(ContextoCuentas);
-  if (!contexto) {
-    throw new Error('usarContextoCuentas debe ser utilizado dentro de un ProveedorCuentas');
-  }
+  if (!contexto) throw new Error('usarContextoCuentas debe ser utilizado dentro de un ProveedorCuentas');
   return contexto;
 };
-
-

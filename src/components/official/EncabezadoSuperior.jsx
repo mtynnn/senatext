@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase, supabaseAdmin } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { Building2, Info, Settings, User, LogOut } from 'lucide-react';
 
 export const EncabezadoSuperior = () => {
@@ -13,7 +13,7 @@ export const EncabezadoSuperior = () => {
     const cargarPerfil = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: perfil } = await supabaseAdmin.from('funcionarios')
+        const { data: perfil } = await supabase.from('funcionarios')
           .select('nombre, modulo, correo')
           .eq('id', user.id)
           .single();
