@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { PREGUNTAS_PREDETERMINADAS } from './ContextoPreguntas';
 import { supabase } from '../lib/supabase';
+import { usarAuth } from './ContextoAuth';
 
 const ContextoCuentas = createContext(undefined);
 export const ROLES = { PENDIENTE: 'pendiente', FUNCIONARIO: 'funcionario' };
@@ -20,11 +21,17 @@ async function ejecutarAdministracion(action, payload = {}) {
 export const ProveedorCuentas = ({ children }) => {
   const [cuentas, setCuentas] = useState([]);
   const [atenciones, setAtenciones] = useState([]);
+  const { esAdmin, cargando } = usarAuth();
   const cargarCuentas = useCallback(async () => {
     try { setCuentas((await ejecutarAdministracion('list')).cuentas || []); }
     catch (error) { console.error('Error cargando funcionarios:', error); }
   }, []);
-  useEffect(() => { cargarCuentas(); }, [cargarCuentas]);
+  // Solo un admin autenticado puede listar cuentas; se espera a que termine de cargar la sesión.
+  useEffect(() => {
+    if (cargando) return;
+    if (esAdmin) cargarCuentas();
+    else setCuentas([]);
+  }, [cargando, esAdmin, cargarCuentas]);
 
   const crearCuenta = useCallback(async ({ nombre, email }) => {
     const nombreLimpio = (nombre || '').trim();

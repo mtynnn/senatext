@@ -40,15 +40,38 @@ export const ProveedorAuth = ({ children }) => {
   }, []);
 
   const [esAdmin, setEsAdmin] = useState(false);
+  const [cargandoRol, setCargandoRol] = useState(true);
+  const [idRolCargado, setIdRolCargado] = useState(null);
+  const idUsuario = usuario?.id;
 
   useEffect(() => {
+    // Mientras se resuelve la sesión no se sabe si hay usuario: cargandoRol sigue en true.
+    if (cargando) return;
+    let cancelado = false;
     const cargarRol = async () => {
-      if (!usuario) { setEsAdmin(false); return; }
-      const { data, error } = await supabase.from('funcionarios').select('rol').eq('id', usuario.id).single();
-      setEsAdmin(!error && data?.rol === 'admin');
+      if (!idUsuario) {
+        setEsAdmin(false);
+        setIdRolCargado(null);
+        setCargandoRol(false);
+        return;
+      }
+      setCargandoRol(true);
+      try {
+        const { data, error } = await supabase.from('funcionarios').select('rol').eq('id', idUsuario).single();
+        if (cancelado) return;
+        setEsAdmin(!error && data?.rol === 'admin');
+      } catch (err) {
+        if (!cancelado) setEsAdmin(false);
+      } finally {
+        if (!cancelado) {
+          setIdRolCargado(idUsuario);
+          setCargandoRol(false);
+        }
+      }
     };
     cargarRol();
-  }, [usuario]);
+    return () => { cancelado = true; };
+  }, [idUsuario, cargando]);
 
   const cerrarSesion = async () => {
     setCargando(true);
@@ -66,7 +89,9 @@ export const ProveedorAuth = ({ children }) => {
   const valor = {
     usuario,
     sesion,
-    cargando,
+    // Combinado: sesión cargando, perfil cargando, o perfil aún no cargado para el usuario actual
+    // (cubre el render intermedio entre que llega el usuario y arranca la consulta del rol).
+    cargando: cargando || cargandoRol || (usuario != null && idRolCargado !== usuario.id),
     esAdmin,
     cerrarSesion
   };

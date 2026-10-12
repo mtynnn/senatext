@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Building2, ArrowLeft, AlertCircle, Loader2, Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { PiePagina } from '../components/common/PiePagina';
 import { supabase } from '../lib/supabase';
+import { usarAuth } from '../context/ContextoAuth';
 
 const DOMINIOS_VALIDOS = ['@gmail.com', '@cesfam.com', '@cesfam.cl'];
 
 export const LoginFuncionario = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { usuario, cargando: cargandoAuth, esAdmin } = usarAuth();
+
+  // La redirección depende del rol, y solo se decide cuando la autenticación (sesión + perfil) está lista.
+  // También aplica si el usuario ya estaba autenticado al entrar a /login.
+  useEffect(() => {
+    if (usuario && !cargandoAuth) {
+      navigate(esAdmin ? '/admin' : '/funcionario', { replace: true });
+    }
+  }, [usuario, cargandoAuth, esAdmin, navigate]);
 
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
@@ -63,7 +73,7 @@ export const LoginFuncionario = () => {
     setCargando(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: emailNormalizado,
         password: password
       });
@@ -71,16 +81,11 @@ export const LoginFuncionario = () => {
       if (error) {
         throw error;
       }
-
-      if (emailNormalizado === 'admin@cesfam.com') {
-        navigate('/admin');
-      } else {
-        navigate('/funcionario');
-      }
+      // Sin navigate aquí: el efecto de arriba redirige cuando usuario, cargando y esAdmin estén listos.
+      // `cargando` local se mantiene en true hasta que la página se desmonte por la redirección.
     } catch (err) {
       console.error('Error de autenticación:', err);
       setErrorCredenciales('Credenciales incorrectas. Verifique su correo y contraseña.');
-    } finally {
       setCargando(false);
     }
   };
