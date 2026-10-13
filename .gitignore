@@ -141,3 +141,13 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+.venv-ia/
+
+# AI assistant notes
+AGENTS.md
+CLAUDE.md
+
+# Archivos pesados y de datos
+*.zip
+*.csv
+*.keras

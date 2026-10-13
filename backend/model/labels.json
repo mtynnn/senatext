@@ -1,0 +1,23 @@
+[
+  "alergia",
+  "consulta_medica",
+  "control_adulto",
+  "control_nino_sano",
+  "dentista",
+  "dolor",
+  "enfermera",
+  "enfermero",
+  "farmacia",
+  "fiebre",
+  "malestar_general",
+  "matrona",
+  "medico",
+  "no",
+  "no_entiendo",
+  "porfavor",
+  "receta_medica",
+  "retiro_medicamentos",
+  "si",
+  "solicitar_hora",
+  "tengo_hora"
+]

@@ -1,0 +1,36 @@
+{
+  "frame_count": 30,
+  "frame_size": 64,
+  "channels": 1,
+  "input_shape": [
+    1,
+    30,
+    64,
+    64,
+    1
+  ],
+  "normalization": "grayscale_0_1",
+  "classes": [
+    "alergia",
+    "consulta_medica",
+    "control_adulto",
+    "control_nino_sano",
+    "dentista",
+    "dolor",
+    "enfermera",
+    "enfermero",
+    "farmacia",
+    "fiebre",
+    "malestar_general",
+    "matrona",
+    "medico",
+    "no",
+    "no_entiendo",
+    "porfavor",
+    "receta_medica",
+    "retiro_medicamentos",
+    "si",
+    "solicitar_hora",
+    "tengo_hora"
+  ]
+}

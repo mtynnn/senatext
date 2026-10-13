@@ -1,13 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Video, VideoOff, Camera } from 'lucide-react';
+import { Video, Camera } from 'lucide-react';
 import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
 import { Holistic, FACEMESH_TESSELATION, HAND_CONNECTIONS, POSE_CONNECTIONS } from '@mediapipe/holistic';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 export const ContenedorCamara = () => {
-  const { camaraActiva, setCamaraActiva } = usarContextoPreguntas();
+  const { camaraActiva, setCamaraActiva, actualizarTraduccion } = usarContextoPreguntas();
   const referenciaVideo = useRef(null);
   const referenciaLienzo = useRef(null);
+  const framesModelo = useRef([]);
+  const prediccionActiva = useRef(false);
+  const ultimaPrediccion = useRef(0);
   const [camaraLista, setCamaraLista] = useState(false);
 
   useEffect(() => {
@@ -27,6 +30,8 @@ export const ContenedorCamara = () => {
 
     const canvasCtx = canvasElement.getContext('2d');
     let timeoutId;
+
+    let currentLandmarks = new Array(33 * 4 + 21 * 3 + 21 * 3).fill(0);
 
     function onResults(results) {
       canvasCtx.save();
@@ -49,6 +54,13 @@ export const ContenedorCamara = () => {
         drawLandmarks(canvasCtx, results.rightHandLandmarks, { color: '#FF0000', lineWidth: 2 });
       }
       canvasCtx.restore();
+
+      // Extraer coordenadas para el modelo
+      const pose = results.poseLandmarks ? results.poseLandmarks.map(l => [l.x, l.y, l.z, l.visibility]).flat() : new Array(33 * 4).fill(0);
+      const lh = results.leftHandLandmarks ? results.leftHandLandmarks.map(l => [l.x, l.y, l.z]).flat() : new Array(21 * 3).fill(0);
+      const rh = results.rightHandLandmarks ? results.rightHandLandmarks.map(l => [l.x, l.y, l.z]).flat() : new Array(21 * 3).fill(0);
+      
+      currentLandmarks = [...pose, ...lh, ...rh];
     }
 
     const holistic = new Holistic({
@@ -69,11 +81,35 @@ export const ContenedorCamara = () => {
 
     holistic.onResults(onResults);
 
-    // Bucle asíncrono para análisis de frames con MediaPipe (~10 FPS)
+    // Enviar prediccion cada cierto tiempo
+    async function enviarPrediccion() {
+      const ahora = Date.now();
+      if (prediccionActiva.current || ahora - ultimaPrediccion.current < 1200) return;
+      
+      prediccionActiva.current = true;
+      try {
+        const respuesta = await fetch('http://127.0.0.1:8000/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ landmarks: currentLandmarks }),
+        });
+        if (!respuesta.ok) return;
+        const resultado = await respuesta.json();
+        const texto = resultado.label.replaceAll('_', ' ');
+        actualizarTraduccion(texto, `Confianza ${(resultado.confidence * 100).toFixed(1)}%`);
+        ultimaPrediccion.current = Date.now();
+      } catch {
+        actualizarTraduccion('Modelo no disponible', 'Inicia el backend de IA para activar predicciones');
+      } finally {
+        prediccionActiva.current = false;
+      }
+    }
+
     async function procesarFrame() {
       if (!camaraActiva) return;
       if (videoElement && videoElement.readyState >= 2) {
         await holistic.send({ image: videoElement });
+        enviarPrediccion();
       }
       timeoutId = setTimeout(procesarFrame, 100);
     }
