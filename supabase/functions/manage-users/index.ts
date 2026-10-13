@@ -1,13 +1,29 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': Deno.env.get('ALLOWED_ORIGIN') ?? 'http://localhost:3000',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+// Lista explícita de orígenes permitidos: ALLOWED_ORIGINS (separados por coma) + ALLOWED_ORIGIN (compatibilidad).
+// Si ninguno está definido, se usan los orígenes de desarrollo.
+const ORIGENES_DESARROLLO = ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:3000', 'http://127.0.0.1:5173'];
+const origenesConfigurados = [Deno.env.get('ALLOWED_ORIGINS'), Deno.env.get('ALLOWED_ORIGIN')]
+  .flatMap((valor) => (valor ?? '').split(','))
+  .map((origen) => origen.trim())
+  .filter(Boolean);
+const ORIGENES_PERMITIDOS = new Set(origenesConfigurados.length > 0 ? origenesConfigurados : ORIGENES_DESARROLLO);
+
+// Headers CORS para una petición: solo se devuelve Allow-Origin si el Origin está en la lista.
+const cabecerasCors = (req: Request): Record<string, string> => {
+  const origen = req.headers.get('Origin');
+  const cabeceras: Record<string, string> = {
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Vary': 'Origin',
+  };
+  if (origen && ORIGENES_PERMITIDOS.has(origen)) cabeceras['Access-Control-Allow-Origin'] = origen;
+  return cabeceras;
 };
-const respuesta = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
 Deno.serve(async (req: Request) => {
+  const corsHeaders = cabecerasCors(req);
+  const respuesta = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   if (req.method !== 'POST') return respuesta({ error: 'Método no permitido.' }, 405);
   const authorization = req.headers.get('Authorization');
