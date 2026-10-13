@@ -1,4 +1,4 @@
-﻿import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 /**
  * ============================================================================
@@ -20,34 +20,53 @@ export const PREGUNTAS_PREDETERMINADAS = [
 ];
 
 export const ProveedorPreguntas = ({ children }) => {
-  const [preguntaActivaState, setPreguntaActivaState] = useState("¿A qué viene hoy?");
+  // Inicializar con localStorage si existe, o valor por defecto
+  const [preguntaActivaState, setPreguntaActivaState] = useState(() => {
+    return localStorage.getItem('senatext_pregunta_activa') || "¿A qué viene hoy?";
+  });
   const [textoReconocidoState, setTextoReconocidoState] = useState("Dolor de estómago");
   const [mensajeEstadoState, setMensajeEstadoState] = useState("Esperando más información del paciente...");
   const [camaraActivaState, setCamaraActivaState] = useState(true);
   const [preguntasState, setPreguntasState] = useState(PREGUNTAS_PREDETERMINADAS);
 
-  // Sincronización entre pestañas usando BroadcastChannel
+  // Sincronización entre pestañas y ventanas usando BroadcastChannel + evento storage
   useEffect(() => {
     const channel = new BroadcastChannel('senatext_sync_channel');
     
     channel.onmessage = (event) => {
       const { type, payload } = event.data;
       if (type === 'SYNC_CAMARA') setCamaraActivaState(payload);
-      if (type === 'SYNC_PREGUNTA_ACTIVA') setPreguntaActivaState(payload);
+      if (type === 'SYNC_PREGUNTA_ACTIVA') {
+        setPreguntaActivaState(payload);
+        try { localStorage.setItem('senatext_pregunta_activa', payload); } catch {}
+      }
       if (type === 'SYNC_TEXTO_RECONOCIDO') setTextoReconocidoState(payload);
       if (type === 'SYNC_MENSAJE_ESTADO') setMensajeEstadoState(payload);
       if (type === 'SYNC_PREGUNTAS') setPreguntasState(payload);
     };
 
+    // Respaldo mediante evento storage estándar de los navegadores
+    const handleStorage = (e) => {
+      if (e.key === 'senatext_pregunta_activa' && e.newValue) {
+        setPreguntaActivaState(e.newValue);
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
     return () => {
       channel.close();
+      window.removeEventListener('storage', handleStorage);
     };
   }, []);
 
   const broadcast = (type, payload) => {
-    const channel = new BroadcastChannel('senatext_sync_channel');
-    channel.postMessage({ type, payload });
-    channel.close();
+    try {
+      const channel = new BroadcastChannel('senatext_sync_channel');
+      channel.postMessage({ type, payload });
+      channel.close();
+    } catch (e) {
+      console.warn('BroadcastChannel error:', e);
+    }
   };
 
   const setCamaraActiva = (estado) => {
@@ -57,6 +76,11 @@ export const ProveedorPreguntas = ({ children }) => {
 
   const setPreguntaActiva = (pregunta) => {
     setPreguntaActivaState(pregunta);
+    try {
+      localStorage.setItem('senatext_pregunta_activa', pregunta);
+    } catch (e) {
+      console.warn('localStorage error:', e);
+    }
     broadcast('SYNC_PREGUNTA_ACTIVA', pregunta);
   };
 
