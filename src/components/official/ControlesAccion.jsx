@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { ArrowRight, Edit3, CheckCircle2, AlertCircle, Loader2, Video, VideoOff } from 'lucide-react';
+import { ArrowRight, Edit3, CheckCircle2, AlertCircle, Loader2, Video, VideoOff, Hand } from 'lucide-react';
 import { usarContextoPreguntas } from '../../context/ContextoPreguntas';
+import { usarSolicitudGrabacion } from '../../hooks/usarSolicitudGrabacion';
+import { obtenerContextoDePregunta } from '../../constants/contextosReconocimiento';
+import { modoSimulado } from '../../services/reconocimientoSenas';
 import { usarAuth } from '../../context/ContextoAuth';
 import { supabase } from '../../lib/supabase';
 
@@ -18,6 +21,17 @@ export const ControlesAccion = () => {
   const [textoManual, setTextoManual] = useState('');
   const [guardando, setGuardando] = useState(false);
   const [notificacion, setNotificacion] = useState(null);
+
+  // Grabación remota: el funcionario pide a /paciente que grabe la seña.
+  const simulado = modoSimulado();
+  const contextoReconocimiento = obtenerContextoDePregunta(preguntaActiva);
+  const { fase: faseGrabacion, esperandoAck, solicitarGrabacion } = usarSolicitudGrabacion();
+  const grabacionEnCurso = esperandoAck || faseGrabacion !== 'inactivo';
+  const etiquetaGrabacion = esperandoAck ? 'Solicitando...'
+    : faseGrabacion === 'preparando' ? 'Preparando...'
+    : faseGrabacion === 'grabando' ? 'Grabando...'
+    : faseGrabacion === 'procesando' ? 'Procesando...'
+    : 'Grabar seña';
 
   const manejarEdicion = () => {
     setTextoManual(textoReconocido);
@@ -153,6 +167,10 @@ export const ControlesAccion = () => {
         </div>
       )}
 
+      {!estaEditando && !simulado && !contextoReconocimiento && (
+        <p className="text-xs text-slate-500">Elige una pregunta preparada para reconocer la seña</p>
+      )}
+
       {estaEditando ? (
         <form onSubmit={guardarEdicion} className="flex items-center gap-2 w-full max-w-md">
           <input
@@ -179,6 +197,16 @@ export const ControlesAccion = () => {
         </form>
       ) : (
         <div className="flex items-center justify-end gap-3">
+          <button
+            onClick={() => solicitarGrabacion(contextoReconocimiento)}
+            disabled={simulado || !contextoReconocimiento || grabacionEnCurso}
+            title={simulado ? 'Modo simulado: el reconocedor no está activo' : undefined}
+            className="px-4 py-2.5 rounded-xl bg-cesfam-500 hover:bg-cesfam-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium text-xs sm:text-sm shadow-sm transition-all flex items-center gap-2 active:scale-98"
+          >
+            {grabacionEnCurso ? <Loader2 className="w-4 h-4 animate-spin" /> : <Hand className="w-4 h-4" />}
+            <span>{etiquetaGrabacion}</span>
+          </button>
+
           <button
             onClick={() => setCamaraActiva(!camaraActiva)}
             className={`px-4 py-2.5 rounded-xl border font-medium text-xs sm:text-sm transition-all flex items-center gap-2 shadow-sm active:scale-98 ${camaraActiva
