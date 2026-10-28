@@ -13,11 +13,11 @@ from selenium.webdriver.support import expected_conditions as EC  # type: ignore
 from selenium.webdriver.chrome.service import Service  # type: ignore
 from webdriver_manager.chrome import ChromeDriverManager  # type: ignore
 from selenium.webdriver.common.keys import Keys  # type: ignore
+from selenium.webdriver.remote.webelement import WebElement  # type: ignore
 
 
 # ==============================================================================
 # CONFIGURACIÓN BASE DE PRUEBAS SELENIUM - PROYECTO SEÑATEXT (CESFAM)
-# Basado en la estructura de referencia: pruebasEv2.py
 # Equipo QA: Ariel Valverde, Martín Quiroga, Vicente Tramon, Diego Robert
 # ==============================================================================
 
@@ -42,6 +42,13 @@ class BaseTest(unittest.TestCase):
     HEADLESS = os.getenv("HEADLESS", "0") == "1"
     REUSE_BROWSER = os.getenv("REUSE_BROWSER", "1") == "1"
 
+    # Velocidad de ejecución (en segundos):
+    # STEP_DELAY: pausa tras cada clic, escritura o cambio de página
+    # TEST_DELAY: pausa al finalizar cada prueba para observar el resultado
+    STEP_DELAY = float(os.getenv("STEP_DELAY", "1.0"))
+    TEST_DELAY = float(os.getenv("TEST_DELAY", "2.0"))
+    _EN_ESCRITURA = False
+
     # Credenciales institucionales configuradas en Supabase Auth
     FUNC_EMAIL = os.getenv("TEST_FUNC_EMAIL", "ariel.valverde@cesfam.com")
     FUNC_PASSWORD = os.getenv("TEST_FUNC_PASSWORD", "123456")
@@ -52,6 +59,11 @@ class BaseTest(unittest.TestCase):
     @classmethod
     def _crear_driver(cls):
         opts = Options()
+        # Ruta de Brave en tu equipo
+        brave_path = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+        if os.path.exists(brave_path):
+            opts.binary_location = brave_path
+
         if cls.HEADLESS:
             opts.add_argument("--headless=new")
         opts.add_argument("--window-size=1366,768")
@@ -59,10 +71,7 @@ class BaseTest(unittest.TestCase):
         opts.add_argument("--use-fake-ui-for-media-stream")
         opts.add_argument("--use-fake-device-for-media-stream")
         opts.add_experimental_option("detach", not cls.HEADLESS)
-        return webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()),
-            options=opts
-        )
+        return webdriver.Chrome(options=opts)
 
     @classmethod
     def setUpClass(cls):
@@ -80,13 +89,20 @@ class BaseTest(unittest.TestCase):
         if not cls.REUSE_BROWSER and cls.driver is not None:
             cls.driver.quit()
 
+    def tearDown(self):
+        if self.TEST_DELAY > 0:
+            time.sleep(self.TEST_DELAY)
+
     def go(self, path=""):
         url = f"{self.BASE_URL.rstrip('/')}/{path.lstrip('/')}"
         self.driver.get(url)
+        if self.STEP_DELAY > 0:
+            time.sleep(self.STEP_DELAY)
 
     def limpiar_estado(self):
         """Limpia sesión de Supabase, localStorage y sessionStorage."""
-        self.go("/")
+        url = f"{self.BASE_URL.rstrip('/')}/"
+        self.driver.get(url)
         self.driver.execute_script(
             "window.localStorage.clear(); window.sessionStorage.clear();"
         )
@@ -94,11 +110,18 @@ class BaseTest(unittest.TestCase):
 
     def limpiar_y_escribir(self, elemento, texto):
         """Limpia un input controlado de React de forma segura y escribe texto."""
-        elemento.click()
-        elemento.send_keys(Keys.CONTROL, "a")
-        elemento.send_keys(Keys.BACKSPACE)
-        if texto:
-            elemento.send_keys(texto)
+        BaseTest._EN_ESCRITURA = True
+        try:
+            elemento.click()
+            elemento.send_keys(Keys.CONTROL, "a")
+            elemento.send_keys(Keys.BACKSPACE)
+            if texto:
+                elemento.send_keys(texto)
+        finally:
+            BaseTest._EN_ESCRITURA = False
+        if self.STEP_DELAY > 0:
+            time.sleep(self.STEP_DELAY)
+
 
     def iniciar_sesion(self, email, password):
         d, w = self.driver, self.wait
@@ -110,6 +133,19 @@ class BaseTest(unittest.TestCase):
         self.limpiar_y_escribir(input_pass, password)
         btn_submit = d.find_element(By.CSS_SELECTOR, "button[type='submit']")
         btn_submit.click()
+
+
+_ORIG_CLICK = WebElement.click
+
+
+def _click_pausado(self, *args, **kwargs):
+    res = _ORIG_CLICK(self, *args, **kwargs)
+    if not BaseTest._EN_ESCRITURA and BaseTest.STEP_DELAY > 0:
+        time.sleep(BaseTest.STEP_DELAY)
+    return res
+
+
+WebElement.click = _click_pausado
 
 
 # ==============================================================================
@@ -597,6 +633,52 @@ class TestPanelAdminModalCrearCuenta(BaseTest):
         input_email.send_keys(Keys.ESCAPE)
         w.until(EC.invisibility_of_element_located((By.CSS_SELECTOR, "[role='dialog']")))
         print("OK - Modal 'Crear cuenta': validaciones de campos vacíos, email inválido y cierre con Escape OK.")
+
+
+# Orden secuencial exacto según el documento Casos_de_pruebas_1.3.2 (CP-001 a CP-012)
+ORDEN_CASOS_PRUEBA = [
+    # CP-001: Portal de Inicio y Enrutamiento
+    TestPortalInicio,
+    TestRedireccionRutaInexistente,
+    # CP-002: Validación de Formulario y Dominios en Login
+    TestLoginVacio,
+    TestLoginDominioInv,
+    # CP-003: Rechazo de Credenciales Inválidas y Visibilidad de Contraseña
+    TestVisibilidadPassword,
+    TestLoginPswdInc,
+    # CP-004: Inicio de Sesión Exitoso y Redirección por Rol
+    TestLoginFuncionarioExitoso,
+    TestLoginAdminExitoso,
+    # CP-005: Protección de Rutas Privadas (RutaProtegida) y RBAC
+    TestAccesoSinSesionFuncionario,
+    TestAccesoSinSesionAdmin,
+    TestBloqueoRBACFuncionarioEnAdmin,
+    # CP-006: Visor de Cámara WebRTC, MediaPipe e Indicaciones del Paciente
+    TestVistaPacienteElementos,
+    TestRetornoInicioDesdePaciente,
+    # CP-007: Selección de Preguntas Preparadas y Sincronización con Paciente
+    TestPanelFuncionarioPreguntas,
+    TestSincronizacionPreguntaPaciente,
+    # CP-008: Control Remoto de Cámara en Tiempo Real Multi-Pestaña
+    TestSincronizacionCamaraMultiPestana,
+    # CP-009: Edición y Corrección Manual de Traducción
+    TestCorreccionManualTraduccion,
+    # CP-010: Registro de Síntoma e Interacción Clínica en Supabase
+    TestRegistrarSintomaSupabase,
+    # CP-011: Cierre de Sesión ('Terminar Jornada Laboral')
+    TestTerminarJornadaLaboral,
+    # CP-012: Panel de Administración (Métricas, Filtros y Modal Crear Cuenta)
+    TestPanelAdminDashboard,
+    TestPanelAdminFiltros,
+    TestPanelAdminModalCrearCuenta,
+]
+
+
+def load_tests(loader, standard_tests, pattern):
+    suite = unittest.TestSuite()
+    for test_class in ORDEN_CASOS_PRUEBA:
+        suite.addTests(loader.loadTestsFromTestCase(test_class))
+    return suite
 
 
 if __name__ == "__main__":
