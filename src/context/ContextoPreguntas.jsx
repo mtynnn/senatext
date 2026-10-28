@@ -28,6 +28,9 @@ export const ProveedorPreguntas = ({ children }) => {
   const [mensajeEstadoState, setMensajeEstadoState] = useState("Esperando más información del paciente...");
   const [camaraActivaState, setCamaraActivaState] = useState(true);
   const [preguntasState, setPreguntasState] = useState(PREGUNTAS_PREDETERMINADAS);
+  // Resultado del reconocedor real (null mientras se usa el texto simulado).
+  const [confianzaState, setConfianzaState] = useState(null);
+  const [alternativaState, setAlternativaState] = useState(null);
 
   // Sincronización entre pestañas y ventanas usando BroadcastChannel + evento storage
   useEffect(() => {
@@ -43,6 +46,10 @@ export const ProveedorPreguntas = ({ children }) => {
       if (type === 'SYNC_TEXTO_RECONOCIDO') setTextoReconocidoState(payload);
       if (type === 'SYNC_MENSAJE_ESTADO') setMensajeEstadoState(payload);
       if (type === 'SYNC_PREGUNTAS') setPreguntasState(payload);
+      if (type === 'SYNC_RESULTADO_RECONOCIMIENTO') {
+        setConfianzaState(payload?.confianza ?? null);
+        setAlternativaState(payload?.alternativa ?? null);
+      }
     };
 
     // Respaldo mediante evento storage estándar de los navegadores
@@ -99,7 +106,14 @@ export const ProveedorPreguntas = ({ children }) => {
     broadcast('SYNC_PREGUNTAS', nuevasPreguntas);
   };
 
-  const agregarPreguntaLibre = (nuevaPregunta) => {
+  // confianza = margen_relativo (0 a 1) del reconocedor; alternativa = segunda_opcion.
+  const setResultadoReconocimiento = ({ confianza = null, alternativa = null } = {}) => {
+    setConfianzaState(confianza);
+    setAlternativaState(alternativa);
+    broadcast('SYNC_RESULTADO_RECONOCIMIENTO', { confianza, alternativa });
+  };
+
+  const agregarPreguntaLibre =(nuevaPregunta) => {
     if (!nuevaPregunta || nuevaPregunta.trim() === '') return;
     const preguntaFormateada = nuevaPregunta.trim();
     if (!preguntasState.includes(preguntaFormateada)) {
@@ -126,6 +140,9 @@ export const ProveedorPreguntas = ({ children }) => {
     preguntas: preguntasState,
     agregarPreguntaLibre,
     actualizarTraduccion,
+    confianza: confianzaState,
+    alternativa: alternativaState,
+    setResultadoReconocimiento,
   };
 
   return (
