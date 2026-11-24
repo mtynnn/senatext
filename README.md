@@ -28,7 +28,17 @@ npm run dev
 
 Abre la URL que imprime Vite. Para probar el flujo de atención, abre las vistas de funcionario y paciente en dos pestañas del mismo navegador y con el mismo origen. La vista paciente requiere acceso a la cámara para grabar señas. Para generar el paquete de producción del frontend, ejecuta `npm run build`.
 
-Docker queda pendiente. El flujo de ejecución documentado usa Vite y se conecta a Supabase y a la API de reconocimiento mediante las variables de entorno.
+## Ejecutar con Docker Compose
+
+Con Docker y Compose activos, copia `Proyecto/.env.example` como `Proyecto/.env.local` y completa las variables de la tabla. Desde la raíz:
+
+```sh
+docker compose up --build
+```
+
+Abre [http://localhost:3000](http://localhost:3000). Compose ejecuta el frontend de desarrollo con Vite. Supabase y la API de reconocimiento se configuran como servicios externos. Sin URL de reconocimiento, la aplicación usa el modo simulado.
+
+Para detener el contenedor, ejecuta `docker compose down`.
 
 ## Evidencias
 
