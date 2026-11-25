@@ -97,6 +97,8 @@ Para detener el contenedor, ejecuta `docker compose down`.
 - [Componentes](Fase%202/Evidencias%20Proyecto/Evidencias%20de%20documentaci%C3%B3n/Diagrama%20de%20componentes%20Se%C3%B1aText.md)
 - [Modelo entidad–relación](Fase%202/Evidencias%20Proyecto/Evidencias%20de%20sistema/Modelo%20Entidad-Relaci%C3%B3n%20Se%C3%B1aText.png)
 
+- [Manual técnico y de despliegue](Fase%202/Evidencias%20Proyecto/Evidencias%20de%20documentaci%C3%B3n/Manual%20t%C3%A9cnico%20y%20de%20despliegue.docx)
+
 ## Evidencias del sistema
 
 - [Código de la aplicación](Proyecto/)
