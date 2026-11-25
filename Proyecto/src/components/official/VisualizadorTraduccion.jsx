@@ -28,24 +28,27 @@ export const VisualizadorTraduccion = () => {
 
         <div className="mt-4 p-6 md:p-8 bg-slate-50 border-2 border-slate-200 rounded-2xl min-h-[200px] sm:min-h-[250px] shadow-inner flex flex-col justify-start overflow-y-auto">
           <p className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-800 leading-relaxed break-words">
-            {textoReconocido || "Esperando se�a..."}
+            {textoReconocido || "Esperando seña..."}
           </p>
 
-          {/* Confianza = margen relativo entre la mejor y la segunda opción, NO una precisión calibrada. */}
           {confianza !== null && confianza !== undefined && (
             <div className="mt-3 space-y-1">
-              <p className="text-sm font-semibold text-cesfam-800">
-                Confianza: {Math.round(confianza * 100)}%
-              </p>
-              {alternativa && (
-                <p className="text-xs text-slate-500">Alternativa: {alternativa}</p>
-              )}
               {/* UMBRAL_CONFIANZA_BAJA es provisional (sin calibrar). */}
               {confianza < UMBRAL_CONFIANZA_BAJA && (
                 <p className="text-xs font-semibold text-amber-700">
-                  Confianza baja, conviene repetir la seña
+                  Conviene repetir la seña
                 </p>
               )}
+              <details className="text-xs text-slate-500">
+                <summary className="cursor-pointer w-fit rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-cesfam-500">
+                  Ver detalles
+                </summary>
+                <div className="mt-2 space-y-1">
+                  <p>Margen del modelo: {confianza.toFixed(3)}</p>
+                  {alternativa && <p>Alternativa: {alternativa}</p>}
+                  <p>El margen compara las dos mejores opciones; no es una probabilidad de acierto.</p>
+                </div>
+              </details>
             </div>
           )}
 

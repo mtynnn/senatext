@@ -16,13 +16,15 @@ export const PREPARACION_S = 3;
 // que conviene repetir la seña. No es una probabilidad ni una precisión.
 export const UMBRAL_CONFIANZA_BAJA = 0.15;
 
-// Los 5 contextos del reconocedor con sus 4 clases cada uno (20 clases en total).
+const RESPUESTAS_GENERALES = ['Sí', 'No', 'No entiendo', 'Por favor'];
+
+// La API local v2 incluye comunicación en cada contexto específico (20 clases únicas).
 export const CONTEXTOS_RECONOCIMIENTO = {
-  comunicacion: ['Sí', 'No', 'No entiendo', 'Por favor'],
-  gestion: ['Tengo hora', 'Solicitar hora', 'Receta médica', 'Retiro de medicamentos'],
-  motivo: ['Control Niño Sano', 'Control de adulto', 'Consulta médica', 'Farmacia'],
-  profesional: ['Médico/a', 'Matrona', 'Dentista', 'Enfermero/a'],
-  sintomas: ['Dolor', 'Malestar general', 'Fiebre', 'Alergia'],
+  comunicacion: [...RESPUESTAS_GENERALES],
+  gestion: ['Tengo hora', 'Solicitar hora', 'Receta médica', 'Retiro de medicamentos', ...RESPUESTAS_GENERALES],
+  motivo: ['Control Niño Sano', 'Control de adulto', 'Consulta médica', 'Farmacia', ...RESPUESTAS_GENERALES],
+  profesional: ['Médico/a', 'Matrona', 'Dentista', 'Enfermero/a', ...RESPUESTAS_GENERALES],
+  sintomas: ['Dolor', 'Malestar general', 'Fiebre', 'Alergia', ...RESPUESTAS_GENERALES],
 };
 
 // Mapeo pregunta preparada (PREGUNTAS_PREDETERMINADAS) -> contexto del reconocedor.

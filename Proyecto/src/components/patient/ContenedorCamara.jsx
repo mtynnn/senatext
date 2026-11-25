@@ -75,7 +75,7 @@ export const ContenedorCamara = () => {
       const respuesta = await reconocerSena(blob, contexto, abortRef.current.signal);
       if (!montadoRef.current) return;
       // Confianza = margen_relativo entre la mejor y la segunda opción (0 a 1).
-      // NO es una precisión calibrada. Se muestra como porcentaje solo de forma orientativa.
+      // NO es una precisión calibrada. El funcionario puede consultar el margen en los detalles.
       const margen = Number(respuesta.margen_relativo);
       const confianza = Number.isFinite(margen) ? margen : null;
       const alternativa = respuesta.segunda_opcion || null;
@@ -401,18 +401,10 @@ export const ContenedorCamara = () => {
         {estadoReconocimiento === 'resultado' && resultado && (
           <div className="w-full bg-cesfam-50 border border-cesfam-200 rounded-xl px-4 py-3">
             <p className="text-xl sm:text-2xl font-semibold text-slate-900">{resultado.texto}</p>
-            {resultado.confianza !== null && (
-              <p className="text-sm text-cesfam-800 mt-1">
-                Confianza: {Math.round(resultado.confianza * 100)}%
-              </p>
-            )}
-            {resultado.alternativa && (
-              <p className="text-xs text-slate-500 mt-0.5">Alternativa: {resultado.alternativa}</p>
-            )}
             {confianzaBaja && (
               <p className="text-xs font-semibold text-amber-700 mt-2 inline-flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" />
-                Confianza baja, conviene repetir la seña
+                Conviene repetir la seña
               </p>
             )}
           </div>

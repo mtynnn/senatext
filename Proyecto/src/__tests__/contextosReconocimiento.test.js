@@ -16,7 +16,7 @@ describe('Pruebas Unitarias — contextosReconocimiento', () => {
     expect(UMBRAL_CONFIANZA_BAJA).toBeLessThan(1);
   });
 
-  it('contiene exactamente 5 contextos con 4 clases cada uno (20 señas en total)', () => {
+  it('incluye las 4 respuestas generales en cada contexto sin perder sus clases específicas', () => {
     const contextos = Object.keys(CONTEXTOS_RECONOCIMIENTO);
     expect(contextos).toEqual([
       'comunicacion',
@@ -30,7 +30,9 @@ describe('Pruebas Unitarias — contextosReconocimiento', () => {
     const conjuntoUnico = new Set();
     for (const ctx of contextos) {
       const clases = CONTEXTOS_RECONOCIMIENTO[ctx];
-      expect(clases).toHaveLength(4);
+      expect(clases).toHaveLength(ctx === 'comunicacion' ? 4 : 8);
+      expect(new Set(clases).size).toBe(clases.length);
+      expect(clases).toEqual(expect.arrayContaining(['Sí', 'No', 'No entiendo', 'Por favor']));
       for (const c of clases) {
         expect(typeof c).toBe('string');
         expect(c.trim().length).toBeGreaterThan(0);
@@ -38,7 +40,7 @@ describe('Pruebas Unitarias — contextosReconocimiento', () => {
         totalClases += 1;
       }
     }
-    expect(totalClases).toBe(20);
+    expect(totalClases).toBe(36);
     expect(conjuntoUnico.size).toBe(20);
   });
 
