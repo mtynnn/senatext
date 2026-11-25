@@ -6,6 +6,27 @@ SeñaText es un prototipo web de accesibilidad digital que apoya la atención pr
 ¿Qué problema resuelve? Reduce la barrera comunicacional en los mesones de atención primaria donde no existe un intérprete de LSCh disponible, entregando autonomía al paciente y disminuyendo malentendidos en trámites críticos (solicitud de horas, farmacia, orientación y síntomas básicos).
 
 # Tecnologías utilizadas
+## Tecnologías utilizadas
+
+### Frontend
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=webrtc&logoColor=white)
+![MediaPipe](https://img.shields.io/badge/MediaPipe_JS-0097A7?style=for-the-badge&logo=google&logoColor=white)
+
+### Backend e Inteligencia Artificial
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Deep Learning](https://img.shields.io/badge/LSTM_%2F_1D--CNN-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+
+### Base de Datos, Cloud y QA
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+![Selenium](https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white)
 Frontend: React, Vite, Tailwind CSS, WebRTC y MediaPipe JS (Edge Computing para extracción de landmarks en el navegador).
 Backend e Inteligencia Artificial: Python, FastAPI y modelo de Deep Learning (LSTM / 1D-CNN) para clasificación de secuencias temporales de señas.
 Base de Datos y Autenticación: Supabase (PostgreSQL, Supabase Auth con JWT/RBAC y Edge Function manage-users).
