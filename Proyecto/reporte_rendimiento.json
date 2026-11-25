@@ -1,0 +1,66 @@
+{
+  "fecha": "2026-11-25T11:21:07.240698",
+  "base_url": "https://senatext.netlify.app",
+  "rutas": [
+    {
+      "ruta": "/",
+      "ok": "3/3",
+      "status": 200,
+      "min_ms": 884.05,
+      "avg_ms": 1251.24,
+      "max_ms": 1939.25,
+      "kb": 1.05
+    },
+    {
+      "ruta": "/paciente",
+      "ok": "0/3",
+      "status": 404,
+      "min_ms": 347.62,
+      "avg_ms": 545.48,
+      "max_ms": 910.27,
+      "kb": 0.0
+    },
+    {
+      "ruta": "/login",
+      "ok": "0/3",
+      "status": 404,
+      "min_ms": 195.91,
+      "avg_ms": 446.38,
+      "max_ms": 605.08,
+      "kb": 0.0
+    },
+    {
+      "ruta": "/funcionario",
+      "ok": "0/3",
+      "status": 404,
+      "min_ms": 183.71,
+      "avg_ms": 365.98,
+      "max_ms": 500.31,
+      "kb": 0.0
+    },
+    {
+      "ruta": "/admin",
+      "ok": "0/3",
+      "status": 404,
+      "min_ms": 220.51,
+      "avg_ms": 351.23,
+      "max_ms": 433.26,
+      "kb": 0.0
+    }
+  ],
+  "carga_concurrente": {
+    "usuarios_concurrentes": 10,
+    "total_peticiones": 30,
+    "exitosas": 15,
+    "fallidas": 15,
+    "tasa_exito_pct": 50.0,
+    "duracion_total_s": 0.84,
+    "throughput_req_s": 35.71,
+    "min_ms": 180.47,
+    "avg_ms": 242.81,
+    "p50_ms": 196.75,
+    "p95_ms": 432.65,
+    "max_ms": 503.3
+  },
+  "aprobado": false
+}
