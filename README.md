@@ -29,10 +29,14 @@ SeñaText es un prototipo web de accesibilidad digital que apoya la atención pr
 
 
 # Arquitectura de la solución
-SeñaText implementa una Arquitectura de 3 Capas combinada con Edge Computing:
-Capa de Presentación (Frontend): Aplicación web en React/Vite que separa las vistas de paciente (/paciente), funcionario (/funcionario) y administrador (/admin). Utiliza WebRTC y MediaPipe JS para capturar la cámara localmente y extraer coordenadas espaciales 3D (landmarks), protegiendo la privacidad del paciente al evitar el envío de video crudo por la red.
-Capa de Lógica de Negocio e IA (Backend): API en FastAPI que recibe las coordenadas JSON, ejecuta la inferencia con el modelo entrenado y aplica un umbral de confianza (Confidence Threshold) antes de retornar la palabra reconocida.
-Capa de Datos y Seguridad (Persistencia): Supabase gestiona la autenticación institucional (JWT y control de acceso basado en roles RBAC) y persiste en PostgreSQL las tablas funcionarios, atenciones, interacciones, preguntas, vocabulario, contextos_preguntas y project_heartbeat.
+SeñaText implementa una **Arquitectura de 3 Capas** combinada con **Edge Computing**:
+
+| Capa | Tecnologías | Responsabilidad |
+| :--- | :--- | :--- |
+| **Capa de Presentación (Frontend)** | React, Vite, WebRTC, MediaPipe JS | Separa las vistas de paciente (`/paciente`), funcionario (`/funcionario`) y administrador (`/admin`). Captura la cámara localmente y extrae coordenadas espaciales 3D (*landmarks*), protegiendo la privacidad del paciente al evitar el envío de video crudo por la red. |
+| **Capa de Lógica de Negocio e IA (Backend)** | Python, FastAPI, LSTM / 1D-CNN | Recibe las coordenadas JSON, ejecuta la inferencia con el modelo entrenado y aplica un umbral de confianza (*Confidence Threshold*) antes de retornar la palabra reconocida. |
+| **Capa de Datos y Seguridad (Persistencia)** | Supabase (PostgreSQL + Auth JWT/RBAC) | Gestiona la autenticación institucional (JWT y control de acceso basado en roles RBAC) y persiste las tablas `funcionarios`, `atenciones`, `interacciones`, `preguntas`, `vocabulario`, `contextos_preguntas` y `project_heartbeat`. |
+<img width="621" height="486" alt="image" src="https://github.com/user-attachments/assets/a3cd9510-b5e3-4c79-b1c9-06828aecb60c" />
 
 # Metodología de trabajo
 El proyecto se desarrolló bajo el marco ágil Scrum organizado en 8 Sprints de 2 semanas (16 semanas totales, Agosto–Noviembre 2026), planificando y gestionando 27 Historias de Usuario (HU-0101 a HU-0903) mediante Product Backlog, Sprint Backlog, Hoja de Ruta (Agile Roadmap), Definition of Done (DoD) y reuniones de Retrospectiva por iteración.
