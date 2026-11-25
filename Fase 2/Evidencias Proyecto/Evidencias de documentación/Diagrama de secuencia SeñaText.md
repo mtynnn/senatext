@@ -1,6 +1,6 @@
 # Secuencia del reconocimiento de una seña
 
-Flujo principal de atención en modo real. Las vistas se sincronizan entre pestañas del mismo navegador.
+Flujo principal de atención según la arquitectura definida en arc42. Las vistas se sincronizan entre pestañas del mismo navegador.
 
 ```mermaid
 sequenceDiagram
@@ -8,6 +8,7 @@ sequenceDiagram
     participant VF as Vista funcionario
     participant VP as Vista paciente
     actor P as Paciente
+    participant MP as MediaPipe JS en el navegador
     participant API as API de reconocimiento
     participant DB as Supabase
 
@@ -18,7 +19,9 @@ sequenceDiagram
     VP-->>VF: Confirma recepción de la solicitud
     VP-->>P: Muestra la pregunta y la cuenta regresiva
     P->>VP: Responde en Lengua de Señas Chilena
-    VP->>API: POST /reconocer con video y contexto
+    VP->>MP: Procesa la captura localmente
+    MP-->>VP: Devuelve la secuencia de coordenadas 3D
+    VP->>API: POST /predict con coordenadas JSON y contexto
 
     alt Reconocimiento exitoso
         API-->>VP: Devuelve predicción, alternativa y margen
