@@ -92,7 +92,12 @@ Para detener el contenedor, ejecuta `docker compose down`.
 - [Fase 1 · Definición del proyecto](Fase%201)
 - [Fase 2 · Desarrollo y evidencias](Fase%202)
 - [Fase 3 · Presentación final y reflexiones](Fase%203)
-- [Casos de uso](Fase%202/Evidencias%20Proyecto/Diagrama%20de%20casos%20de%20uso%20Se%C3%B1aText.png)
-- [Secuencia del reconocimiento](Fase%202/Evidencias%20Proyecto/Diagrama%20de%20secuencia%20Se%C3%B1aText.md)
-- [Componentes](Fase%202/Evidencias%20Proyecto/Diagrama%20de%20componentes%20Se%C3%B1aText.md)
-- [Modelo entidad–relación](Fase%202/Evidencias%20Proyecto/Modelo%20Entidad-Relaci%C3%B3n%20Se%C3%B1aText.png)
+- [Casos de uso](Fase%202/Evidencias%20Proyecto/Evidencias%20de%20documentaci%C3%B3n/Diagrama%20de%20casos%20de%20uso%20Se%C3%B1aText.png)
+- [Secuencia del reconocimiento](Fase%202/Evidencias%20Proyecto/Evidencias%20de%20documentaci%C3%B3n/Diagrama%20de%20secuencia%20Se%C3%B1aText.md)
+- [Componentes](Fase%202/Evidencias%20Proyecto/Evidencias%20de%20documentaci%C3%B3n/Diagrama%20de%20componentes%20Se%C3%B1aText.md)
+- [Modelo entidad–relación](Fase%202/Evidencias%20Proyecto/Evidencias%20de%20sistema/Modelo%20Entidad-Relaci%C3%B3n%20Se%C3%B1aText.png)
+
+## Evidencias del sistema
+
+- [Código de la aplicación](Proyecto/)
+- [Archivos de base de datos](Proyecto/supabase/)
