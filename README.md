@@ -27,11 +27,7 @@ SeñaText es un prototipo web de accesibilidad digital que apoya la atención pr
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 ![Selenium](https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white)
-Frontend: React, Vite, Tailwind CSS, WebRTC y MediaPipe JS (Edge Computing para extracción de landmarks en el navegador).
-Backend e Inteligencia Artificial: Python, FastAPI y modelo de Deep Learning (LSTM / 1D-CNN) para clasificación de secuencias temporales de señas.
-Base de Datos y Autenticación: Supabase (PostgreSQL, Supabase Auth con JWT/RBAC y Edge Function manage-users).
-Cloud y Despliegue: Cloudflare (hosting/seguridad), Docker Compose (entorno de desarrollo) y GitHub.
-Pruebas QA: Python unittest y Selenium WebDriver.
+
 
 # Arquitectura de la solución
 SeñaText implementa una Arquitectura de 3 Capas combinada con Edge Computing:
