@@ -6,7 +6,6 @@ SeñaText es un prototipo web de accesibilidad digital que apoya la atención pr
 ¿Qué problema resuelve? Reduce la barrera comunicacional en los mesones de atención primaria donde no existe un intérprete de LSCh disponible, entregando autonomía al paciente y disminuyendo malentendidos en trámites críticos (solicitud de horas, farmacia, orientación y síntomas básicos).
 
 # Tecnologías utilizadas
-## Tecnologías utilizadas
 
 ### Frontend
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
