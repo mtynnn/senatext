@@ -1,6 +1,33 @@
-# SeñaText
+# SeñaText — Traductor de Lengua de Señas Chilena (LSCh) a Texto para CESFAM
 
-SeñaText es un prototipo web que apoya la atención de personas usuarias de Lengua de Señas Chilena en CESFAM. La vista de paciente captura una seña dentro de un vocabulario acotado y la vista de funcionario muestra el texto reconocido. Es un Proyecto APT de Ingeniería en Informática de Duoc UC.
+# Descripción
+SeñaText es un prototipo web de accesibilidad digital que apoya la atención presencial de personas sordas usuarias de Lengua de Señas Chilena (LSCh) en los mesones de Centros de Salud Familiar (CESFAM). La vista de paciente captura una seña dentro de un vocabulario acotado y la vista de funcionario muestra el texto reconocido en pantalla. Es un Proyecto APT de Ingeniería en Informática de Duoc UC (Sede Antonio Varas).
+¿A quién va dirigido? A pacientes sordos usuarios de Lengua de Señas Chilena (LSCh) y a funcionarios administrativos de atención primaria de salud (CESFAM).
+¿Qué problema resuelve? Reduce la barrera comunicacional en los mesones de atención primaria donde no existe un intérprete de LSCh disponible, entregando autonomía al paciente y disminuyendo malentendidos en trámites críticos (solicitud de horas, farmacia, orientación y síntomas básicos).
+
+# Tecnologías utilizadas
+Frontend: React, Vite, Tailwind CSS, WebRTC y MediaPipe JS (Edge Computing para extracción de landmarks en el navegador).
+Backend e Inteligencia Artificial: Python, FastAPI y modelo de Deep Learning (LSTM / 1D-CNN) para clasificación de secuencias temporales de señas.
+Base de Datos y Autenticación: Supabase (PostgreSQL, Supabase Auth con JWT/RBAC y Edge Function manage-users).
+Cloud y Despliegue: Cloudflare (hosting/seguridad), Docker Compose (entorno de desarrollo) y GitHub.
+Pruebas QA: Python unittest y Selenium WebDriver.
+
+# Arquitectura de la solución
+SeñaText implementa una Arquitectura de 3 Capas combinada con Edge Computing:
+Capa de Presentación (Frontend): Aplicación web en React/Vite que separa las vistas de paciente (/paciente), funcionario (/funcionario) y administrador (/admin). Utiliza WebRTC y MediaPipe JS para capturar la cámara localmente y extraer coordenadas espaciales 3D (landmarks), protegiendo la privacidad del paciente al evitar el envío de video crudo por la red.
+Capa de Lógica de Negocio e IA (Backend): API en FastAPI que recibe las coordenadas JSON, ejecuta la inferencia con el modelo entrenado y aplica un umbral de confianza (Confidence Threshold) antes de retornar la palabra reconocida.
+Capa de Datos y Seguridad (Persistencia): Supabase gestiona la autenticación institucional (JWT y control de acceso basado en roles RBAC) y persiste en PostgreSQL las tablas funcionarios, atenciones, interacciones, preguntas, vocabulario, contextos_preguntas y project_heartbeat.
+
+# Metodología de trabajo
+El proyecto se desarrolló bajo el marco ágil Scrum organizado en 8 Sprints de 2 semanas (16 semanas totales, Agosto–Noviembre 2026), planificando y gestionando 27 Historias de Usuario (HU-0101 a HU-0903) mediante Product Backlog, Sprint Backlog, Hoja de Ruta (Agile Roadmap), Definition of Done (DoD) y reuniones de Retrospectiva por iteración.
+
+# Integrantes del equipo y roles
+| Integrante | Correo | Rol en el Proyecto |
+| :--- | :--- | :--- |
+| **Ariel Valverde P.** | `ari.valverde@duocuc.cl` | Scrum Master / Desarrollador Full Stack / QA |
+| **Diego Robert S.** | `di.robert@duocuc.cl` | Product Owner / Desarrollador Full Stack |
+| **Martín Quiroga U.** | `ma.quiroga@duocuc.cl` | Desarrollador Backend / Ingeniero de IA |
+| **Vicente Tramon F.** | `vi.tramon@duocuc.cl` | Desarrollador Full Stack / Científico de Datos |
 
 ## Ejecutar en desarrollo
 
